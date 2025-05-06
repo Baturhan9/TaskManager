@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
+using TaskManager.Models;
 
 namespace TaskManager.Interfaces.Repositories
 {
@@ -10,8 +6,8 @@ namespace TaskManager.Interfaces.Repositories
     {
         IEnumerable<Attachment> GetAttachments(bool trackChanges);
         IEnumerable<Attachment> GetAttachmentsByTaskId(int AttachmentId, bool trackChanges);
-        Attachment GetAttachment(int taskId, bool trackChanges);
-        void DeleteAttachment(Attachment task);
-        void CreateAttachment(Attachment task);
+        Attachment GetAttachment(int attachmentId, bool trackChanges);
+        void DeleteAttachment(Attachment attachment);
+        void CreateAttachment(Attachment attachment);
     }
 }

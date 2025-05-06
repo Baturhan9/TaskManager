@@ -10,7 +10,7 @@ namespace TaskManager.Interfaces.Repositories
     {
         IEnumerable<Project> GetProjects(bool trackChanges);
         Project GetProject(int projectId, bool trackChanges);
-        void DeleteProject(Project task);
-        void CreateProject(Project task);
+        void DeleteProject(Project project);
+        void CreateProject(Project project);
     }
 }

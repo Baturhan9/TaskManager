@@ -7,7 +7,7 @@ namespace TaskManager.Interfaces.Repositories
         IEnumerable<UserAccess> GetUserAccesses(bool trackChanges);
         IEnumerable<UserAccess> GetUserAccessesByUserId(int userId, bool trackChanges);
         UserAccess GetUserAccess(int userAccessId, bool trackChanges);
-        void DeleteUserAccess(UserAccess task);
-        void CreateUserAccess(UserAccess task);
+        void DeleteUserAccess(UserAccess userAccess);
+        void CreateUserAccess(UserAccess userAccess);
     }
 }
