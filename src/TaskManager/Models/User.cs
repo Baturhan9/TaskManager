@@ -23,7 +23,8 @@ public partial class User
 
     public virtual ICollection<Task> TaskTesters { get; set; } = new List<Task>();
 
-    public virtual ICollection<TaskStatusLog> TaskStatusLogs { get; set; } = new List<TaskStatusLog>();
+    public virtual ICollection<TaskStatusLog> TaskStatusLogs { get; set; } =
+        new List<TaskStatusLog>();
 
     public virtual ICollection<UserAccess> UserAccesses { get; set; } = new List<UserAccess>();
 }
