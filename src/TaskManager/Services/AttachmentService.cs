@@ -1,4 +1,5 @@
 using AutoMapper;
+using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
@@ -8,8 +9,8 @@ namespace TaskManager.Services
 {
     public class AttachmentService : IAttachmentService
     {
-        private IRepositoryManager _repositoryManager;
-        private IMapper _mapper;
+        private readonly IRepositoryManager _repositoryManager;
+        private readonly IMapper _mapper;
 
         public AttachmentService(IRepositoryManager repositoryManager, IMapper mapper)
         {
@@ -26,9 +27,12 @@ namespace TaskManager.Services
 
         public void DeleteAttachment(int attachmentId)
         {
-            var attachment = _repositoryManager.Attachment.GetAttachment(attachmentId, trackChanges: false);
+            var attachment = _repositoryManager.Attachment.GetAttachment(
+                attachmentId,
+                trackChanges: false
+            );
             if (attachment == null)
-                throw new Exception($"Attachment with id {attachmentId} not found.");
+                throw new NotFoundAttachmentException(attachmentId);
 
             _repositoryManager.Attachment.DeleteAttachment(attachment);
             _repositoryManager.Save();
@@ -36,17 +40,33 @@ namespace TaskManager.Services
 
         public AttachmentDTO GetAttachment(int attachmentId, bool trackChanges)
         {
-            throw new NotImplementedException();
+            var attachment = _repositoryManager.Attachment.GetAttachment(
+                attachmentId,
+                trackChanges
+            );
+            if (attachment == null)
+                throw new NotFoundAttachmentException(attachmentId);
+
+            return _mapper.Map<AttachmentDTO>(attachment);
         }
 
         public IEnumerable<AttachmentDTO> GetAttachments(bool trackChanges)
         {
-            throw new NotImplementedException();
+            var attachments = _repositoryManager.Attachment.GetAttachments(trackChanges);
+            return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
         }
 
         public void UpdateAttachment(int attachmentId, AttachmentDTO attachment)
         {
-            throw new NotImplementedException();
+            var attachmentDB = _repositoryManager.Attachment.GetAttachment(
+                attachmentId,
+                trackChanges: true
+            );
+            if (attachmentDB == null)
+                throw new NotFoundAttachmentException(attachmentId);
+
+            _mapper.Map(attachment, attachmentDB);
+            _repositoryManager.Save();
         }
     }
 }

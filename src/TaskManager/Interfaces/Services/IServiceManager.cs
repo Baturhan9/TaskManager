@@ -7,8 +7,8 @@ namespace TaskManager.Interfaces.Services
         IAttachmentService Attachment { get; }
         IProjectService Project { get; }
         ITaskService Task { get; }
-        ITaskStatusLogService TaskStatus { get; }
+        ITaskStatusLogService TaskStatusLog { get; }
         IUserAccessService UserAccess { get; }
-        IUserAccessService User { get; }
+        IUserService User { get; }
     }
 }
