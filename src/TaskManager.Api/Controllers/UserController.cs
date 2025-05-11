@@ -32,18 +32,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserDTO user)
+        public IActionResult CreateUser([FromBody] UserForManipulationDTO user)
         {
             if (user == null)
             {
                 return BadRequest("User is null");
             }
             _serviceManager.User.CreateUser(user);
-            return CreatedAtAction(nameof(GetUser), new { id = user.UserId }, user);
+            return CreatedAtAction(nameof(GetUser), user);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] UserDTO user)
+        public IActionResult UpdateUser(int id, [FromBody] UserForManipulationDTO user)
         {
             if (user == null)
             {
