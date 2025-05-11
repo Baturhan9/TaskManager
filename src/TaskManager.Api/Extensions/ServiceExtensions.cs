@@ -70,7 +70,15 @@ namespace TaskManager.Api.Extensions
             IConfiguration configuration
         )
         {
-            string connectionString = configuration.GetConnectionString("PostgresConnectionString");
+            string connectionString = configuration.GetConnectionString(
+                "PostgresConnectionString"
+            )!;
+
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException(
+                    nameof(connectionString),
+                    "Connection string is null or empty"
+                );
 
             services.AddDbContext<TaskManagerContext>(options =>
                 options.UseNpgsql(connectionString)

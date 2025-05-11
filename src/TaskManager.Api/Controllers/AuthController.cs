@@ -17,7 +17,6 @@ namespace TaskManager.Api.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IServiceManager _serviceManager;
-        private readonly IMapper _mapper;
 
         public AuthController(ILogger<AuthController> logger, IServiceManager serviceManager)
         {
