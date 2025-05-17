@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
@@ -62,9 +63,9 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPatch("{id}/assign")]
-        public IActionResult AssignTask(int id, [FromBody] int userId, [FromBody] TaskRoles role)
+        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment)
         {
-            _serviceManager.Task.AssignTaskToUser(id, userId, role);
+            _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
     }
