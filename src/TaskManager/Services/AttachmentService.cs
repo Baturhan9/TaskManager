@@ -56,6 +56,15 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
         }
 
+        public IEnumerable<AttachmentDTO> GetAttachmentsByTaskId(int taskId, bool trackChanges)
+        {
+            var attachments = _repositoryManager.Attachment.GetAttachmentsByTaskId(
+                taskId,
+                trackChanges
+            );
+            return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
+        }
+
         public void UpdateAttachment(int attachmentId, AttachmentDTO attachment)
         {
             var attachmentDB = _repositoryManager.Attachment.GetAttachment(

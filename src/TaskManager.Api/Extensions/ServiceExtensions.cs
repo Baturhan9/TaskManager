@@ -1,8 +1,10 @@
 using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TaskManager.Api.Classes;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
@@ -34,10 +36,19 @@ namespace TaskManager.Api.Extensions
 
         public static IServiceCollection AddMyAuthentication(this IServiceCollection services)
         {
-            services
-                .AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<TaskManagerContext>()
-                .AddDefaultTokenProviders();
+            // can you fix this code
+            // services
+            //     .AddIdentityCore<User>(options =>
+            //     {
+            //         options.User.RequireUniqueEmail = true;
+            //         options.Password.RequireDigit = false;
+            //         options.Password.RequiredLength = 6;
+            //         options.Password.RequireNonAlphanumeric = false;
+            //         options.Password.RequireLowercase = false;
+            //         options.Password.RequireUppercase = false;
+            //     })
+            //     .AddEntityFrameworkStores<TaskManagerContext>()
+            //     .AddDefaultTokenProviders();
 
             services
                 .AddAuthentication(options =>
@@ -70,9 +81,7 @@ namespace TaskManager.Api.Extensions
             IConfiguration configuration
         )
         {
-            string connectionString = configuration.GetConnectionString(
-                "PostgresConnectionString"
-            )!;
+            string connectionString = configuration.GetValue<string>("ConnectionStrings")!;
 
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentNullException(
@@ -84,6 +93,11 @@ namespace TaskManager.Api.Extensions
                 options.UseNpgsql(connectionString)
             );
             return services;
+        }
+
+        public static void ConfigureAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(Program));
         }
     }
 }

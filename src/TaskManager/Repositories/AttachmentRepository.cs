@@ -19,9 +19,7 @@ namespace TaskManager.Repositories
         public IEnumerable<Attachment> GetAttachments(bool trackChanges) =>
             FindAll(trackChanges).OrderBy(a => a.AttachmentId).ToList();
 
-        public IEnumerable<Attachment> GetAttachmentsByTaskId(
-            int AttachmentId,
-            bool trackChanges
-        ) => FindByCondition(a => a.TaskId.Equals(AttachmentId), trackChanges).ToList();
+        public IEnumerable<Attachment> GetAttachmentsByTaskId(int taskId, bool trackChanges) =>
+            FindByCondition(a => a.TaskId.Equals(taskId), trackChanges).ToList();
     }
 }

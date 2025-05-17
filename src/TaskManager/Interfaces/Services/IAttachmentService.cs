@@ -5,6 +5,7 @@ namespace TaskManager.Interfaces.Services
     public interface IAttachmentService
     {
         IEnumerable<AttachmentDTO> GetAttachments(bool trackChanges);
+        IEnumerable<AttachmentDTO> GetAttachmentsByTaskId(int taskId, bool trackChanges);
         AttachmentDTO GetAttachment(int attachmentId, bool trackChanges);
         void CreateAttachment(AttachmentDTO attachment);
         void UpdateAttachment(int attachmentId, AttachmentDTO attachment);

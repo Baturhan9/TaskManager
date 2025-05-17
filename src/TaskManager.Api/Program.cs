@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 // Configurations
 builder.Services.ConfigureCors();
 builder.Services.ConfigureDataBase(builder.Configuration);
+builder.Services.ConfigureAutoMapper();
 
 var app = builder.Build();
 

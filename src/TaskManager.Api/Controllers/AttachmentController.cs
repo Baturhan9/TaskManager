@@ -34,6 +34,16 @@ namespace TaskManager.Api.Controllers
             return Ok(attachment);
         }
 
+        [HttpGet("task/{taskId}")]
+        public IActionResult GetAttachmentsByTaskId(int taskId)
+        {
+            var attachments = _serviceManager.Attachment.GetAttachmentsByTaskId(
+                taskId,
+                trackChanges: false
+            );
+            return Ok(attachments);
+        }
+
         [HttpPost]
         public IActionResult CreateAttachment([FromBody] AttachmentDTO attachment)
         {
