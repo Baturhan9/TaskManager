@@ -1,3 +1,4 @@
+using TaskManager.Consts;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Interfaces.Services
@@ -10,7 +11,6 @@ namespace TaskManager.Interfaces.Services
         void UpdateTask(int taskId, TaskDTO task);
         void DeleteTask(int taskId);
         IEnumerable<TaskDTO> GetTasksByProjectId(int projectId, bool trackChanges);
-        void AssignTaskToUser(int taskId, int userId, string role);
-
+        void AssignTaskToUser(int taskId, int userId, TaskRoles role);
     }
 }

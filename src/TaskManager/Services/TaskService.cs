@@ -1,4 +1,5 @@
 using AutoMapper;
+using TaskManager.Consts;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
@@ -11,13 +12,20 @@ namespace TaskManager.Services
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
 
+        private readonly Dictionary<TaskRoles, Action<Models.Task, int>> _roleAssignments = new()
+        {
+            { TaskRoles.Developer, (task, userId) => task.AssignmentId = userId },
+            { TaskRoles.Tester, (task, userId) => task.TesterId = userId },
+            { TaskRoles.Reviewer, (task, userId) => task.ReviewerId = userId },
+        };
+
         public TaskService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
         }
 
-        public void AssignTaskToUser(int taskId, int userId, string role)
+        public void AssignTaskToUser(int taskId, int userId, TaskRoles role)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
             if (task == null)
@@ -25,20 +33,13 @@ namespace TaskManager.Services
             var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
             if (user == null)
                 throw new NotFoundUserException(userId);
-            switch (role)
-            {
-                case "Developer":
-                    task.AssignmentId = userId;
-                    break;
-                case "Tester":
-                    task.TesterId = userId;
-                    break;
-                case "Reviewer":
-                    task.ReviewerId = userId;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid role"); //TODO: create custom exception
-            }
+
+            if (!_roleAssignments.TryGetValue(role, out var assignRole))
+                throw new InvalidOperationException($"Invalid role assignment: {role}"); // TODO: Create Custom Exception
+
+            assignRole(task, userId);
+
+            _repositoryManager.Save();
         }
 
         public void CreateTask(TaskDTO task)
