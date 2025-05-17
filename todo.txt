@@ -1,0 +1,2 @@
+[] пересмотреть ендпоинты 
+(особено связка project - task, task - attachment, task-statusLog, project-access)

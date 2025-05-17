@@ -31,6 +31,13 @@ namespace TaskManager.Api.Controllers
             return Ok(project);
         }
 
+        [HttpGet("{id}/tasks")]
+        public IActionResult GetTasksByProjectId(int id)
+        {
+            var tasks = _serviceManager.Task.GetTasksByProjectId(id, trackChanges: false);
+            return Ok(tasks);
+        }
+
         [HttpPost]
         public IActionResult CreateProject([FromBody] ProjectDTO project)
         {

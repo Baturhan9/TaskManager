@@ -68,5 +68,6 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
+
     }
 }
