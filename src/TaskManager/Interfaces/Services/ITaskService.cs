@@ -10,8 +10,7 @@ namespace TaskManager.Interfaces.Services
         void UpdateTask(int taskId, TaskDTO task);
         void DeleteTask(int taskId);
         IEnumerable<TaskDTO> GetTasksByProjectId(int projectId, bool trackChanges);
+        void AssignTaskToUser(int taskId, int userId, string role);
 
-        // maybe add later
-        // IEnumerable<TaskDTO> GetTasksByUserId(int userId, bool trackChanges);
     }
 }

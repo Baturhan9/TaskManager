@@ -59,5 +59,12 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.DeleteTask(id);
             return NoContent();
         }
+
+        [HttpPatch("{id}/assign")]
+        public IActionResult AssignTask(int id, [FromBody] int userId, [FromBody] string role)
+        {
+            _serviceManager.Task.AssignTask(id, userId);
+            return NoContent();
+        }
     }
 }

@@ -17,6 +17,30 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
+        public void AssignTaskToUser(int taskId, int userId, string role)
+        {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
+            if (task == null)
+                throw new NotFoundTaskException(taskId);
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user == null)
+                throw new NotFoundUserException(userId);
+            switch (role)
+            {
+                case "Developer":
+                    task.AssignmentId = userId;
+                    break;
+                case "Tester":
+                    task.TesterId = userId;
+                    break;
+                case "Reviewer":
+                    task.ReviewerId = userId;
+                    break;
+                default:
+                    throw new ArgumentException("Invalid role"); //TODO: create custom exception
+            }
+        }
+
         public void CreateTask(TaskDTO task)
         {
             var taskDB = _mapper.Map<Models.Task>(task);
