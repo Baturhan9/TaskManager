@@ -39,6 +39,13 @@ namespace TaskManager.Api.Controllers
             return Ok(taskStatusLog);
         }
 
+        [HttpGet("/task/{taskId}")]
+        public IActionResult GetTaskStatusLogByTaskId(int taskId)
+        {
+            var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLogsByTaskId(taskId, trackChanges: false);
+            return Ok(taskStatusLog);
+        }
+
         [HttpPost]
         public IActionResult CreateTaskStatusLog([FromBody] TaskStatusLogDTO taskStatusLog)
         {
