@@ -76,6 +76,11 @@ namespace TaskManager.Services
 
         public IEnumerable<TaskDTO> GetTasksByProjectId(int projectId, bool trackChanges)
         {
+            var project = _repositoryManager.Project.GetProject(projectId, trackChanges: false);
+
+            if (project is null)
+                throw new NotFoundProjectException(projectId);
+
             var tasks = _repositoryManager.Task.GetTasksByProjectId(projectId, trackChanges);
             return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
         }

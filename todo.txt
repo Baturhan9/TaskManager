@@ -5,8 +5,6 @@ accessUser
 TaskStatusLog
 attachment
 
-project/{projId}/task/{taskId}/statusLog/{statusLogId}
-project/{projId}/task/{taskId}/attachment/{attachmentId}
 
-users
-accessUser
+task/{taskId}
+project/{projectId}/tasks
