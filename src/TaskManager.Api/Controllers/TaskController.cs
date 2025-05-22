@@ -34,7 +34,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public IActionResult GetTasksByUserRole(int userId,[FromQuery] TaskRoles role)
+        public IActionResult GetTasksByUserRole(int userId, [FromQuery] TaskRoles role)
         {
             var tasks = _serviceManager.Task.GetTasksByUserRole(userId, role, trackChanges: false);
             return Ok(tasks);
