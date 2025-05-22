@@ -1,9 +1,11 @@
 using AutoMapper;
 using TaskManager.Consts;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
+using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.SystemModels;
 
 namespace TaskManager.Services
 {
@@ -12,11 +14,32 @@ namespace TaskManager.Services
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
 
-        private readonly Dictionary<TaskRoles, Action<Models.Task, int>> _roleAssignments = new()
+        private readonly Dictionary<TaskRoles, RoleOperation> _roleOperation = new()
         {
-            { TaskRoles.Developer, (task, userId) => task.AssignmentId = userId },
-            { TaskRoles.Tester, (task, userId) => task.TesterId = userId },
-            { TaskRoles.Reviewer, (task, userId) => task.ReviewerId = userId },
+            {
+                TaskRoles.Developer,
+                new RoleOperation
+                {
+                    Assign = (task, userId) => task.AssignmentId = userId,
+                    Retrieve = task => task.AssignmentId,
+                }
+            },
+            {
+                TaskRoles.Tester,
+                new RoleOperation
+                {
+                    Assign = (task, userId) => task.TesterId = userId,
+                    Retrieve = task => task.TesterId,
+                }
+            },
+            {
+                TaskRoles.Reviewer,
+                new RoleOperation
+                {
+                    Assign = (task, userId) => task.ReviewerId = userId,
+                    Retrieve = task => task.ReviewerId,
+                }
+            },
         };
 
         public TaskService(IRepositoryManager repositoryManager, IMapper mapper)
@@ -34,10 +57,10 @@ namespace TaskManager.Services
             if (user == null)
                 throw new NotFoundUserException(userId);
 
-            if (!_roleAssignments.TryGetValue(role, out var assignRole))
-                throw new InvalidOperationException($"Invalid role assignment: {role}"); // TODO: Create Custom Exception
+            if (!_roleOperation.TryGetValue(role, out var assignRole))
+                throw new BadRequestRoleException(role.ToString());
 
-            assignRole(task, userId);
+            assignRole.Assign(task, userId);
 
             _repositoryManager.Save();
         }
@@ -82,6 +105,25 @@ namespace TaskManager.Services
                 throw new NotFoundProjectException(projectId);
 
             var tasks = _repositoryManager.Task.GetTasksByProjectId(projectId, trackChanges);
+            return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
+        }
+
+        public IEnumerable<TaskDTO> GetTasksByUserRole(
+            int userId,
+            TaskRoles userRole,
+            bool trackChanges
+        )
+        {
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            if (!_roleOperation.TryGetValue(userRole, out var operation))
+                throw new BadRequestRoleException(userRole.ToString());
+
+            var tasks = _repositoryManager.Task.GetTasks(trackChanges);
+            tasks = tasks.Where(t => operation.Retrieve(t) == userId);
+
             return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
         }
 

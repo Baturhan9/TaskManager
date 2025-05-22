@@ -33,6 +33,13 @@ namespace TaskManager.Api.Controllers
             return Ok(task);
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetTasksByUserRole(int userId,[FromQuery] TaskRoles role)
+        {
+            var tasks = _serviceManager.Task.GetTasksByUserRole(userId, role, trackChanges: false);
+            return Ok(tasks);
+        }
+
         [HttpPost]
         public IActionResult CreateTask([FromBody] TaskDTO task)
         {
