@@ -1,0 +1,12 @@
+task
+project
+user
+accessUser
+TaskStatusLog
+attachment
+
+project/{projId}/task/{taskId}/statusLog/{statusLogId}
+project/{projId}/task/{taskId}/attachment/{attachmentId}
+
+users
+accessUser

@@ -63,7 +63,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPatch("{id}/assign")]
-        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment)
+        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment) // TODO: Think about using Query instead of Body
         {
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
