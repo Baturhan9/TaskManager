@@ -18,11 +18,12 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateUserAccess(UserAccessForManipulationDTO userAccess)
+        public UserAccessDTO CreateUserAccess(UserAccessForManipulationDTO userAccess)
         {
             var userAccessDB = _mapper.Map<Models.UserAccess>(userAccess);
             _repositoryManager.UserAccess.CreateUserAccess(userAccessDB);
             _repositoryManager.Save();
+            return _mapper.Map<UserAccessDTO>(userAccessDB);
         }
 
         public void DeleteUserAccess(int userAccessId)

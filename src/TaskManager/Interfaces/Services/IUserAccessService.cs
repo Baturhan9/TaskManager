@@ -8,7 +8,7 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<UserAccessDTO> GetUserAccesses(bool trackChanges);
         IEnumerable<UserAccessDTO> GetUserAccessesByUserId(int userId, bool trackChanges);
         UserAccessDTO GetUserAccess(int userAccessId, bool trackChanges);
-        void CreateUserAccess(UserAccessForManipulationDTO userAccess);
+        UserAccessDTO CreateUserAccess(UserAccessForManipulationDTO userAccess);
         void UpdateUserAccess(int userAccessId, UserAccessForManipulationDTO userAccess);
         void DeleteUserAccess(int userAccessId);
     }

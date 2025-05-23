@@ -58,8 +58,12 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            _serviceManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLog);
-            return CreatedAtAction(nameof(GetTaskStatusLog), taskStatusLog);
+            var taskStatusLogDB = _serviceManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLog);
+            return CreatedAtAction(
+                nameof(GetTaskStatusLog),
+                new { id = taskStatusLogDB.TaskStatusLogId },
+                taskStatusLogDB
+            );
         }
 
         [HttpPut("{id}")]

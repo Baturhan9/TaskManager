@@ -51,8 +51,12 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("UserAccess is null");
             }
-            _serviceManager.UserAccess.CreateUserAccess(userAccess);
-            return CreatedAtAction(nameof(GetUserAccess), userAccess);
+            var userAccessDB = _serviceManager.UserAccess.CreateUserAccess(userAccess);
+            return CreatedAtAction(
+                nameof(GetUserAccess),
+                new { id = userAccessDB.UserAccessId },
+                userAccessDB
+            );
         }
 
         [HttpPut("{id}")]

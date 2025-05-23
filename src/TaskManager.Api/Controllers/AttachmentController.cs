@@ -51,12 +51,19 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("Attachment is null");
             }
-            _serviceManager.Attachment.CreateAttachment(attachment);
-            return CreatedAtAction(nameof(GetAttachment), attachment);
+            var attachmentDB = _serviceManager.Attachment.CreateAttachment(attachment);
+            return CreatedAtAction(
+                nameof(GetAttachment),
+                new { id = attachmentDB.AttachmentId },
+                attachmentDB
+            );
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentForManipulationDTO attachment)
+        public IActionResult UpdateAttachment(
+            int id,
+            [FromBody] AttachmentForManipulationDTO attachment
+        )
         {
             if (attachment == null)
             {

@@ -19,11 +19,12 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog)
+        public TaskStatusLogDTO CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog)
         {
             var taskStatusLogDB = _mapper.Map<TaskStatusLog>(taskStatusLog);
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
             _repositoryManager.Save();
+            return _mapper.Map<TaskStatusLogDTO>(taskStatusLogDB);
         }
 
         public void DeleteTaskStatusLog(int taskStatusLogId)

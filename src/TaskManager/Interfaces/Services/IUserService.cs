@@ -8,7 +8,7 @@ namespace TaskManager.Interfaces.Services
     {
         IEnumerable<UserDTO> GetUsers(bool trackChanges);
         UserDTO GetUser(int userId, bool trackChanges);
-        void CreateUser(UserForManipulationDTO user);
+        UserDTO CreateUser(UserForManipulationDTO user);
         void UpdateUser(int userId, UserForManipulationDTO user);
         void DeleteUser(int userId);
         UserDTO GetUserByEmailAndPassword(string email, string password, bool trackChanges);

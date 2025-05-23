@@ -8,7 +8,7 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(bool trackChanges);
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(int taskId, bool trackChanges);
         TaskStatusLogDTO GetTaskStatusLog(int taskStatusLogId, bool trackChanges);
-        void CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog);
+        TaskStatusLogDTO CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog);
         void UpdateTaskStatusLog(
             int taskStatusLogId,
             TaskStatusLogForManipulationDTO taskStatusLog

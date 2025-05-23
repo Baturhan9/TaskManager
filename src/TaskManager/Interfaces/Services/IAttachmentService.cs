@@ -8,7 +8,7 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<AttachmentDTO> GetAttachments(bool trackChanges);
         IEnumerable<AttachmentDTO> GetAttachmentsByTaskId(int taskId, bool trackChanges);
         AttachmentDTO GetAttachment(int attachmentId, bool trackChanges);
-        void CreateAttachment(AttachmentForManipulationDTO attachment);
+        AttachmentDTO CreateAttachment(AttachmentForManipulationDTO attachment);
         void UpdateAttachment(int attachmentId, AttachmentForManipulationDTO attachment);
         void DeleteAttachment(int attachmentId);
     }

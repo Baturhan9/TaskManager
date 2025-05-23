@@ -38,8 +38,8 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("User is null");
             }
-            _serviceManager.User.CreateUser(user);
-            return CreatedAtAction(nameof(GetUser), user);
+            var userDB = _serviceManager.User.CreateUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = userDB.UserId }, userDB);
         }
 
         [HttpPut("{id}")]

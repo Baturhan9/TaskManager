@@ -47,8 +47,8 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("Task is null");
             }
-            _serviceManager.Task.CreateTask(task);
-            return CreatedAtAction(nameof(GetTask), task);
+            var taskDB = _serviceManager.Task.CreateTask(task);
+            return CreatedAtAction(nameof(GetTask), new { id = taskDB.TaskId }, taskDB);
         }
 
         [HttpPut("{id}")]
@@ -75,6 +75,5 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
-
     }
 }

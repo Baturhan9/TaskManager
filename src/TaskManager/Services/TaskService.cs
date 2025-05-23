@@ -66,11 +66,12 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public void CreateTask(TaskForManipulationDTO task)
+        public TaskDTO CreateTask(TaskForManipulationDTO task)
         {
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
+            return _mapper.Map<TaskDTO>(taskDB);
         }
 
         public void DeleteTask(int taskId)
