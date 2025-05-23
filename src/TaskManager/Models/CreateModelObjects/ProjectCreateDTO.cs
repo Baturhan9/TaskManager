@@ -1,8 +1,7 @@
-namespace TaskManager.Models.DataTransferObjects
+namespace TaskManager.Models.CreateModelObjects
 {
-    public class ProjectDTO
+    public class ProjectCreateDTO
     {
-        public int ProjectId { get; init; }
         public string ShortName { get; init; } = string.Empty;
         public string FullName { get; init; } = string.Empty;
         public string? Description { get; init; }
