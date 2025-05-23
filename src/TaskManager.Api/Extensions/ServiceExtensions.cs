@@ -38,20 +38,6 @@ namespace TaskManager.Api.Extensions
 
         public static IServiceCollection AddMyAuthentication(this IServiceCollection services)
         {
-            // can you fix this code
-            // services
-            //     .AddIdentityCore<User>(options =>
-            //     {
-            //         options.User.RequireUniqueEmail = true;
-            //         options.Password.RequireDigit = false;
-            //         options.Password.RequiredLength = 6;
-            //         options.Password.RequireNonAlphanumeric = false;
-            //         options.Password.RequireLowercase = false;
-            //         options.Password.RequireUppercase = false;
-            //     })
-            //     .AddEntityFrameworkStores<TaskManagerContext>()
-            //     .AddDefaultTokenProviders();
-
             services
                 .AddAuthentication(options =>
                 {
@@ -66,7 +52,7 @@ namespace TaskManager.Api.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "Jwt:Issuer",
+                        ValidIssuer = "Jwt:Issuer", // TODO This is not Safe
                         ValidAudience = "Jwt:Audience",
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes("Jwt:Key")
@@ -74,7 +60,40 @@ namespace TaskManager.Api.Extensions
                     };
                 });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "Developer",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                            || ctx.User.IsInRole(UserRoles.Tester)
+                            || ctx.User.IsInRole(UserRoles.Developer)
+                        )
+                );
+
+                options.AddPolicy(
+                    "Tester",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                            || ctx.User.IsInRole(UserRoles.Tester)
+                        )
+                );
+
+                options.AddPolicy(
+                    "Senior",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                        )
+                );
+
+                options.AddPolicy("Admin", policy => policy.RequireRole(UserRoles.Admin));
+            });
             return services;
         }
 
