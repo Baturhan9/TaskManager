@@ -9,7 +9,6 @@ accessUser
 TaskStatusLog
 attachment
 
-
 task/{taskId}
 project/{projectId}/tasks
 

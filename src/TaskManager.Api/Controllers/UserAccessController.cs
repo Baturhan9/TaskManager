@@ -37,7 +37,7 @@ namespace TaskManager.Api.Controllers
         [HttpGet("user/{userId}")]
         public IActionResult GetUserAccessByUserId(int userId)
         {
-            var userAccess = _serviceManager.UserAccess.GetUserAccessByUserId(userId, trackChanges: false);
+            var userAccess = _serviceManager.UserAccess.GetUserAccessesByUserId(userId, trackChanges: false);
             return Ok(userAccess);
         }
 
