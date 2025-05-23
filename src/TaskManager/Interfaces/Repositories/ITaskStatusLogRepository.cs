@@ -9,7 +9,7 @@ namespace TaskManager.Interfaces.Repositories
             int taskStatusLogId,
             bool trackChanges
         );
-        TaskStatusLog GetTaskStatusLog(int taskStatusLogId, bool trackChanges);
+        TaskStatusLog GetTaskStatusLog(int taskId, bool trackChanges);
         void DeleteTaskStatusLog(TaskStatusLog taskStatusLog);
         void CreateTaskStatusLog(TaskStatusLog taskStatusLog);
     }

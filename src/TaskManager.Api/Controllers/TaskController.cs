@@ -33,6 +33,13 @@ namespace TaskManager.Api.Controllers
             return Ok(task);
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetTasksByUserRole(int userId, [FromQuery] TaskRoles role)
+        {
+            var tasks = _serviceManager.Task.GetTasksByUserRole(userId, role, trackChanges: false);
+            return Ok(tasks);
+        }
+
         [HttpPost]
         public IActionResult CreateTask([FromBody] TaskDTO task)
         {
@@ -63,7 +70,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPatch("{id}/assign")]
-        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment)
+        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment) // TODO: Think about using Query instead of Body
         {
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();

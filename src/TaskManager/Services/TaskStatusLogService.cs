@@ -56,6 +56,16 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<TaskStatusLogDTO>>(taskStatusLogs);
         }
 
+        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(int taskId, bool trackChanges)
+        {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+
+            var taskStatusLog = _repositoryManager.TaskStatusLog.GetTaskStatusLogsByTaskId(taskId, trackChanges);
+            return _mapper.Map<IEnumerable<TaskStatusLogDTO>>(taskStatusLog);
+        }
+
         public void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogDTO taskStatusLog)
         {
             var taskStatusLogDB = _repositoryManager.TaskStatusLog.GetTaskStatusLog(

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Api.Classes;
+using TaskManager.Api.Classes.SwaggerFilters;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
@@ -98,6 +99,17 @@ namespace TaskManager.Api.Extensions
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Program));
+        }
+
+        public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(options =>
+            {
+                // Для System.Text.Json
+                options.SchemaFilter<EnumSchemaFilter>();
+
+            });
+            return services;
         }
     }
 }

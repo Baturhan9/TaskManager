@@ -34,6 +34,13 @@ namespace TaskManager.Api.Controllers
             return Ok(userAccess);
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetUserAccessByUserId(int userId)
+        {
+            var userAccess = _serviceManager.UserAccess.GetUserAccessByUserId(userId, trackChanges: false);
+            return Ok(userAccess);
+        }
+
         [HttpPost]
         public IActionResult CreateUserAccess([FromBody] UserAccessDTO userAccess)
         {

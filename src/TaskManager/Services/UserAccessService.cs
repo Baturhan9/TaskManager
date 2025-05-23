@@ -55,6 +55,17 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<UserAccessDTO>>(userAccesses);
         }
 
+        public IEnumerable<UserAccessDTO> GetUserAccessesByUserId(int userId, bool trackChanges)
+        {
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserId(userId, trackChanges);
+
+            return _mapper.Map<IEnumerable<UserAccessDTO>>(userAccess);
+        }
+
         public void UpdateUserAccess(int userAccessId, UserAccessDTO userAccess)
         {
             var userAccessDB = _repositoryManager.UserAccess.GetUserAccess(
