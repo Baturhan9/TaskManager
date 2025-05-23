@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Api.Controllers
@@ -39,18 +40,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProject([FromBody] ProjectDTO project)
+        public IActionResult CreateProject([FromBody] ProjectCreateDTO project)
         {
             if (project == null)
             {
                 return BadRequest("Project is null");
             }
             _serviceManager.Project.CreateProject(project);
-            return CreatedAtAction(nameof(GetProject), new { id = project.ProjectId }, project);
+            return CreatedAtAction(nameof(GetProject), project);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProject(int id, [FromBody] ProjectDTO project)
+        public IActionResult UpdateProject(int id, [FromBody] ProjectCreateDTO project)
         {
             if (project == null)
             {

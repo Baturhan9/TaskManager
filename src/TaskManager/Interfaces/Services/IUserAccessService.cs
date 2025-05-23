@@ -1,3 +1,4 @@
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Interfaces.Services
@@ -7,8 +8,8 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<UserAccessDTO> GetUserAccesses(bool trackChanges);
         IEnumerable<UserAccessDTO> GetUserAccessesByUserId(int userId, bool trackChanges);
         UserAccessDTO GetUserAccess(int userAccessId, bool trackChanges);
-        void CreateUserAccess(UserAccessDTO userAccess);
-        void UpdateUserAccess(int userAccessId, UserAccessDTO userAccess);
+        void CreateUserAccess(UserAccessCreateDTO userAccess);
+        void UpdateUserAccess(int userAccessId, UserAccessCreateDTO userAccess);
         void DeleteUserAccess(int userAccessId);
     }
 }

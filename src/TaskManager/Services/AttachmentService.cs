@@ -3,6 +3,7 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Services
@@ -18,7 +19,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateAttachment(AttachmentDTO attachment)
+        public void CreateAttachment(AttachmentCreateDTO attachment)
         {
             var attachmentDB = _mapper.Map<Attachment>(attachment);
             _repositoryManager.Attachment.CreateAttachment(attachmentDB);
@@ -65,7 +66,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
         }
 
-        public void UpdateAttachment(int attachmentId, AttachmentDTO attachment)
+        public void UpdateAttachment(int attachmentId, AttachmentCreateDTO attachment)
         {
             var attachmentDB = _repositoryManager.Attachment.GetAttachment(
                 attachmentId,

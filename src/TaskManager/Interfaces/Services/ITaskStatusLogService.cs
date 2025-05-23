@@ -1,3 +1,4 @@
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Interfaces.Services
@@ -7,8 +8,8 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(bool trackChanges);
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(int taskId, bool trackChanges);
         TaskStatusLogDTO GetTaskStatusLog(int taskStatusLogId, bool trackChanges);
-        void CreateTaskStatusLog(TaskStatusLogDTO taskStatusLog);
-        void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogDTO taskStatusLog);
+        void CreateTaskStatusLog(TaskStatusLogCreateDTO taskStatusLog);
+        void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogCreateDTO taskStatusLog);
         void DeleteTaskStatusLog(int taskStatusLogId);
     }
 }

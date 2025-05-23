@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Api.Controllers
@@ -41,18 +42,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTask([FromBody] TaskDTO task)
+        public IActionResult CreateTask([FromBody] TaskCreateDTO task)
         {
             if (task == null)
             {
                 return BadRequest("Task is null");
             }
             _serviceManager.Task.CreateTask(task);
-            return CreatedAtAction(nameof(GetTask), new { id = task.TaskId }, task);
+            return CreatedAtAction(nameof(GetTask), task);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, [FromBody] TaskDTO task)
+        public IActionResult UpdateTask(int id, [FromBody] TaskCreateDTO task)
         {
             if (task == null)
             {

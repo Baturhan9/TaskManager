@@ -3,6 +3,7 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Services
@@ -18,7 +19,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateTaskStatusLog(TaskStatusLogDTO taskStatusLog)
+        public void CreateTaskStatusLog(TaskStatusLogCreateDTO taskStatusLog)
         {
             var taskStatusLogDB = _mapper.Map<TaskStatusLog>(taskStatusLog);
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
@@ -66,7 +67,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<TaskStatusLogDTO>>(taskStatusLog);
         }
 
-        public void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogDTO taskStatusLog)
+        public void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogCreateDTO taskStatusLog)
         {
             var taskStatusLogDB = _repositoryManager.TaskStatusLog.GetTaskStatusLog(
                 taskStatusLogId,

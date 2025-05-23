@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Api.Controllers
@@ -32,7 +33,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserForManipulationDTO user)
+        public IActionResult CreateUser([FromBody] UserCreateDTO user)
         {
             if (user == null)
             {
@@ -43,7 +44,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] UserForManipulationDTO user)
+        public IActionResult UpdateUser(int id, [FromBody] UserCreateDTO user)
         {
             if (user == null)
             {

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Api.Controllers
@@ -37,27 +38,26 @@ namespace TaskManager.Api.Controllers
         [HttpGet("user/{userId}")]
         public IActionResult GetUserAccessByUserId(int userId)
         {
-            var userAccess = _serviceManager.UserAccess.GetUserAccessesByUserId(userId, trackChanges: false);
+            var userAccess = _serviceManager.UserAccess.GetUserAccessesByUserId(
+                userId,
+                trackChanges: false
+            );
             return Ok(userAccess);
         }
 
         [HttpPost]
-        public IActionResult CreateUserAccess([FromBody] UserAccessDTO userAccess)
+        public IActionResult CreateUserAccess([FromBody] UserAccessCreateDTO userAccess)
         {
             if (userAccess == null)
             {
                 return BadRequest("UserAccess is null");
             }
             _serviceManager.UserAccess.CreateUserAccess(userAccess);
-            return CreatedAtAction(
-                nameof(GetUserAccess),
-                new { id = userAccess.UserAccessId },
-                userAccess
-            );
+            return CreatedAtAction(nameof(GetUserAccess), userAccess);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUserAccess(int id, [FromBody] UserAccessDTO userAccess)
+        public IActionResult UpdateUserAccess(int id, [FromBody] UserAccessCreateDTO userAccess)
         {
             if (userAccess == null)
             {

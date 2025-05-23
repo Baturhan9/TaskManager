@@ -1,3 +1,4 @@
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Interfaces.Services
@@ -6,8 +7,8 @@ namespace TaskManager.Interfaces.Services
     {
         IEnumerable<ProjectDTO> GetProjects(bool trackChanges);
         ProjectDTO GetProject(int projectId, bool trackChanges);
-        void CreateProject(ProjectDTO project);
-        void UpdateProject(int projectId, ProjectDTO project);
+        void CreateProject(ProjectCreateDTO project);
+        void UpdateProject(int projectId, ProjectCreateDTO project);
         void DeleteProject(int projectId);
     }
 }

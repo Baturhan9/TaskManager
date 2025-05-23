@@ -4,6 +4,7 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.SystemModels;
 
@@ -65,7 +66,7 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public void CreateTask(TaskDTO task)
+        public void CreateTask(TaskCreateDTO task)
         {
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
@@ -127,7 +128,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
         }
 
-        public void UpdateTask(int taskId, TaskDTO task)
+        public void UpdateTask(int taskId, TaskCreateDTO task)
         {
             var taskDB = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
             if (taskDB == null)

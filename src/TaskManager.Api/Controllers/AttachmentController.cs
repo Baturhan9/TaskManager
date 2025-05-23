@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
 
 namespace TaskManager.Api.Controllers
@@ -45,22 +46,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAttachment([FromBody] AttachmentDTO attachment)
+        public IActionResult CreateAttachment([FromBody] AttachmentCreateDTO attachment)
         {
             if (attachment == null)
             {
                 return BadRequest("Attachment is null");
             }
             _serviceManager.Attachment.CreateAttachment(attachment);
-            return CreatedAtAction(
-                nameof(GetAttachment),
-                new { id = attachment.AttachmentId },
-                attachment
-            );
+            return CreatedAtAction(nameof(GetAttachment), attachment);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentDTO attachment)
+        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentCreateDTO attachment)
         {
             if (attachment == null)
             {
