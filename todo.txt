@@ -1,3 +1,7 @@
+
+[] пересмотреть ендпоинты 
+(особено связка project - task, task - attachment, task-statusLog, project-access)
+
 task
 project
 user
@@ -8,3 +12,4 @@ attachment
 
 task/{taskId}
 project/{projectId}/tasks
+
