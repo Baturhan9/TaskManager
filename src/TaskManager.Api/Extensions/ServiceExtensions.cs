@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Api.Classes;
 using TaskManager.Api.Classes.SwaggerFilters;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
@@ -82,7 +83,9 @@ namespace TaskManager.Api.Extensions
             IConfiguration configuration
         )
         {
-            string connectionString = configuration.GetValue<string>("ConnectionStrings")!;
+            string connectionString = configuration.GetValue<string>(
+                SystemEnvironments.POSTGRES_CONNECTION_STRING
+            )!;
 
             if (string.IsNullOrEmpty(connectionString))
                 throw new ArgumentNullException(
@@ -107,7 +110,6 @@ namespace TaskManager.Api.Extensions
             {
                 // Для System.Text.Json
                 options.SchemaFilter<EnumSchemaFilter>();
-
             });
             return services;
         }
