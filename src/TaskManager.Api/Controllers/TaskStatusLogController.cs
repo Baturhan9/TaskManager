@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -42,27 +42,35 @@ namespace TaskManager.Api.Controllers
         [HttpGet("/task/{taskId}")]
         public IActionResult GetTaskStatusLogByTaskId(int taskId)
         {
-            var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLogsByTaskId(taskId, trackChanges: false);
+            var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLogsByTaskId(
+                taskId,
+                trackChanges: false
+            );
             return Ok(taskStatusLog);
         }
 
         [HttpPost]
-        public IActionResult CreateTaskStatusLog([FromBody] TaskStatusLogDTO taskStatusLog)
+        public IActionResult CreateTaskStatusLog(
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
+        )
         {
             if (taskStatusLog == null)
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            _serviceManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLog);
+            var taskStatusLogDB = _serviceManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLog);
             return CreatedAtAction(
                 nameof(GetTaskStatusLog),
-                new { id = taskStatusLog.TaskStatusLogId },
-                taskStatusLog
+                new { id = taskStatusLogDB.TaskStatusLogId },
+                taskStatusLogDB
             );
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTaskStatusLog(int id, [FromBody] TaskStatusLogDTO taskStatusLog)
+        public IActionResult UpdateTaskStatusLog(
+            int id,
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
+        )
         {
             if (taskStatusLog == null)
             {

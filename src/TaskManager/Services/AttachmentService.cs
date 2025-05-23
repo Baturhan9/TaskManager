@@ -4,6 +4,7 @@ using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Services
 {
@@ -18,11 +19,12 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateAttachment(AttachmentDTO attachment)
+        public AttachmentDTO CreateAttachment(AttachmentForManipulationDTO attachment)
         {
             var attachmentDB = _mapper.Map<Attachment>(attachment);
             _repositoryManager.Attachment.CreateAttachment(attachmentDB);
             _repositoryManager.Save();
+            return _mapper.Map<AttachmentDTO>(attachmentDB);
         }
 
         public void DeleteAttachment(int attachmentId)
@@ -65,7 +67,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
         }
 
-        public void UpdateAttachment(int attachmentId, AttachmentDTO attachment)
+        public void UpdateAttachment(int attachmentId, AttachmentForManipulationDTO attachment)
         {
             var attachmentDB = _repositoryManager.Attachment.GetAttachment(
                 attachmentId,

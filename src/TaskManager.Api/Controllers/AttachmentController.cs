@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -45,22 +45,25 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAttachment([FromBody] AttachmentDTO attachment)
+        public IActionResult CreateAttachment([FromBody] AttachmentForManipulationDTO attachment)
         {
             if (attachment == null)
             {
                 return BadRequest("Attachment is null");
             }
-            _serviceManager.Attachment.CreateAttachment(attachment);
+            var attachmentDB = _serviceManager.Attachment.CreateAttachment(attachment);
             return CreatedAtAction(
                 nameof(GetAttachment),
-                new { id = attachment.AttachmentId },
-                attachment
+                new { id = attachmentDB.AttachmentId },
+                attachmentDB
             );
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentDTO attachment)
+        public IActionResult UpdateAttachment(
+            int id,
+            [FromBody] AttachmentForManipulationDTO attachment
+        )
         {
             if (attachment == null)
             {

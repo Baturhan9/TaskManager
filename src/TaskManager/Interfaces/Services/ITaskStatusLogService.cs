@@ -1,4 +1,5 @@
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Interfaces.Services
 {
@@ -7,8 +8,11 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(bool trackChanges);
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(int taskId, bool trackChanges);
         TaskStatusLogDTO GetTaskStatusLog(int taskStatusLogId, bool trackChanges);
-        void CreateTaskStatusLog(TaskStatusLogDTO taskStatusLog);
-        void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogDTO taskStatusLog);
+        TaskStatusLogDTO CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog);
+        void UpdateTaskStatusLog(
+            int taskStatusLogId,
+            TaskStatusLogForManipulationDTO taskStatusLog
+        );
         void DeleteTaskStatusLog(int taskStatusLogId);
     }
 }

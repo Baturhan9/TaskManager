@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -39,18 +39,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProject([FromBody] ProjectDTO project)
+        public IActionResult CreateProject([FromBody] ProjectForManipulationDTO project)
         {
             if (project == null)
             {
                 return BadRequest("Project is null");
             }
-            _serviceManager.Project.CreateProject(project);
-            return CreatedAtAction(nameof(GetProject), new { id = project.ProjectId }, project);
+            var projectDB = _serviceManager.Project.CreateProject(project);
+            return CreatedAtAction(nameof(GetProject), new { id = projectDB.ProjectId }, projectDB);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProject(int id, [FromBody] ProjectDTO project)
+        public IActionResult UpdateProject(int id, [FromBody] ProjectForManipulationDTO project)
         {
             if (project == null)
             {

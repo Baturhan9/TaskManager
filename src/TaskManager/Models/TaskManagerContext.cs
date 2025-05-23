@@ -29,7 +29,7 @@ public partial class TaskManagerContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TaskManager;User ID=postgres;Password='1qaz!QAZ'");
+        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TaskManager;Username=postgres;Password=1qaz!QAZ");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,7 +61,6 @@ public partial class TaskManagerContext : DbContext
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.DateOfCreate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_of_create");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.FullName)
@@ -83,9 +82,7 @@ public partial class TaskManagerContext : DbContext
             entity.Property(e => e.TaskId).HasColumnName("task_id");
             entity.Property(e => e.AssignmentId).HasColumnName("assignment_id");
             entity.Property(e => e.AuthorId).HasColumnName("author_id");
-            entity.Property(e => e.Deadline)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("deadline");
+            entity.Property(e => e.Deadline).HasColumnName("deadline");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.ReviewerId).HasColumnName("reviewer_id");
@@ -127,7 +124,6 @@ public partial class TaskManagerContext : DbContext
             entity.Property(e => e.Comment).HasColumnName("comment");
             entity.Property(e => e.DateUpdate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
                 .HasColumnName("date_update");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)

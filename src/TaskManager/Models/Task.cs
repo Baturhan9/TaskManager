@@ -33,8 +33,7 @@ public partial class Task
 
     public virtual User? Reviewer { get; set; }
 
-    public virtual ICollection<TaskStatusLog> TaskStatusLogs { get; set; } =
-        new List<TaskStatusLog>();
+    public virtual ICollection<TaskStatusLog> TaskStatusLogs { get; set; } = new List<TaskStatusLog>();
 
     public virtual User? Tester { get; set; }
 }

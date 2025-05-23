@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -38,8 +38,8 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("User is null");
             }
-            _serviceManager.User.CreateUser(user);
-            return CreatedAtAction(nameof(GetUser), user);
+            var userDB = _serviceManager.User.CreateUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = userDB.UserId }, userDB);
         }
 
         [HttpPut("{id}")]

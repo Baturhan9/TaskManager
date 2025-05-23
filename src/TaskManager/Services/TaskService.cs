@@ -5,6 +5,7 @@ using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 using TaskManager.Models.SystemModels;
 
 namespace TaskManager.Services
@@ -65,11 +66,12 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public void CreateTask(TaskDTO task)
+        public TaskDTO CreateTask(TaskForManipulationDTO task)
         {
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
+            return _mapper.Map<TaskDTO>(taskDB);
         }
 
         public void DeleteTask(int taskId)
@@ -127,7 +129,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
         }
 
-        public void UpdateTask(int taskId, TaskDTO task)
+        public void UpdateTask(int taskId, TaskForManipulationDTO task)
         {
             var taskDB = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
             if (taskDB == null)

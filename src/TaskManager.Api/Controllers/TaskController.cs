@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -41,18 +41,18 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTask([FromBody] TaskDTO task)
+        public IActionResult CreateTask([FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
             {
                 return BadRequest("Task is null");
             }
-            _serviceManager.Task.CreateTask(task);
-            return CreatedAtAction(nameof(GetTask), new { id = task.TaskId }, task);
+            var taskDB = _serviceManager.Task.CreateTask(task);
+            return CreatedAtAction(nameof(GetTask), new { id = taskDB.TaskId }, taskDB);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, [FromBody] TaskDTO task)
+        public IActionResult UpdateTask(int id, [FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
             {
@@ -75,6 +75,5 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
-
     }
 }
