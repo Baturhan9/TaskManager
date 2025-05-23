@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -46,7 +45,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUserAccess([FromBody] UserAccessCreateDTO userAccess)
+        public IActionResult CreateUserAccess([FromBody] UserAccessForManipulationDTO userAccess)
         {
             if (userAccess == null)
             {
@@ -57,7 +56,10 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateUserAccess(int id, [FromBody] UserAccessCreateDTO userAccess)
+        public IActionResult UpdateUserAccess(
+            int id,
+            [FromBody] UserAccessForManipulationDTO userAccess
+        )
         {
             if (userAccess == null)
             {

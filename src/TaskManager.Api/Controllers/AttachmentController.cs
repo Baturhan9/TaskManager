@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -46,7 +45,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAttachment([FromBody] AttachmentCreateDTO attachment)
+        public IActionResult CreateAttachment([FromBody] AttachmentForManipulationDTO attachment)
         {
             if (attachment == null)
             {
@@ -57,7 +56,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentCreateDTO attachment)
+        public IActionResult UpdateAttachment(int id, [FromBody] AttachmentForManipulationDTO attachment)
         {
             if (attachment == null)
             {

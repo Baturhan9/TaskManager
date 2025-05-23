@@ -3,8 +3,8 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Services
 {
@@ -19,11 +19,12 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateProject(ProjectCreateDTO project)
+        public ProjectDTO CreateProject(ProjectForManipulationDTO project)
         {
             var projectDB = _mapper.Map<Project>(project);
             _repositoryManager.Project.CreateProject(projectDB);
             _repositoryManager.Save();
+            return _mapper.Map<ProjectDTO>(projectDB);
         }
 
         public void DeleteProject(int projectId)
@@ -51,7 +52,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<ProjectDTO>>(projects);
         }
 
-        public void UpdateProject(int projectId, ProjectCreateDTO project)
+        public void UpdateProject(int projectId, ProjectForManipulationDTO project)
         {
             var projectDB = _repositoryManager.Project.GetProject(projectId, trackChanges: true);
             if (projectDB == null)

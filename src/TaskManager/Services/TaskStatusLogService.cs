@@ -3,8 +3,8 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models;
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Services
 {
@@ -19,7 +19,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateTaskStatusLog(TaskStatusLogCreateDTO taskStatusLog)
+        public void CreateTaskStatusLog(TaskStatusLogForManipulationDTO taskStatusLog)
         {
             var taskStatusLogDB = _mapper.Map<TaskStatusLog>(taskStatusLog);
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
@@ -57,17 +57,26 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<TaskStatusLogDTO>>(taskStatusLogs);
         }
 
-        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(int taskId, bool trackChanges)
+        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogsByTaskId(
+            int taskId,
+            bool trackChanges
+        )
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
             if (task is null)
                 throw new NotFoundTaskException(taskId);
 
-            var taskStatusLog = _repositoryManager.TaskStatusLog.GetTaskStatusLogsByTaskId(taskId, trackChanges);
+            var taskStatusLog = _repositoryManager.TaskStatusLog.GetTaskStatusLogsByTaskId(
+                taskId,
+                trackChanges
+            );
             return _mapper.Map<IEnumerable<TaskStatusLogDTO>>(taskStatusLog);
         }
 
-        public void UpdateTaskStatusLog(int taskStatusLogId, TaskStatusLogCreateDTO taskStatusLog)
+        public void UpdateTaskStatusLog(
+            int taskStatusLogId,
+            TaskStatusLogForManipulationDTO taskStatusLog
+        )
         {
             var taskStatusLogDB = _repositoryManager.TaskStatusLog.GetTaskStatusLog(
                 taskStatusLogId,

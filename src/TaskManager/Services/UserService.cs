@@ -3,8 +3,8 @@ using TaskManager.Exceptions;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Services
 {
@@ -19,7 +19,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateUser(UserCreateDTO user)
+        public void CreateUser(UserForManipulationDTO user)
         {
             var userDB = _mapper.Map<Models.User>(user);
             _repositoryManager.User.CreateUser(userDB);
@@ -64,7 +64,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public void UpdateUser(int userId, UserCreateDTO user)
+        public void UpdateUser(int userId, UserForManipulationDTO user)
         {
             var userDB = _repositoryManager.User.GetUser(userId, trackChanges: true);
             if (userDB == null)

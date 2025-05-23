@@ -1,5 +1,5 @@
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Interfaces.Services
 {
@@ -8,8 +8,8 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<AttachmentDTO> GetAttachments(bool trackChanges);
         IEnumerable<AttachmentDTO> GetAttachmentsByTaskId(int taskId, bool trackChanges);
         AttachmentDTO GetAttachment(int attachmentId, bool trackChanges);
-        void CreateAttachment(AttachmentCreateDTO attachment);
-        void UpdateAttachment(int attachmentId, AttachmentCreateDTO attachment);
+        void CreateAttachment(AttachmentForManipulationDTO attachment);
+        void UpdateAttachment(int attachmentId, AttachmentForManipulationDTO attachment);
         void DeleteAttachment(int attachmentId);
     }
 }

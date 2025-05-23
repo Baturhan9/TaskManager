@@ -1,6 +1,6 @@
-namespace TaskManager.Models.CreateModelObjects
+namespace TaskManager.Models.ManipulationDTO
 {
-    public class UserCreateDTO
+    public class UserForManipulationDTO
     {
         public string Username { get; init; } = string.Empty;
         public string Email { get; init; } = string.Empty;

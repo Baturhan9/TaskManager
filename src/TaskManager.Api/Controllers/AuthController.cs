@@ -1,14 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Api.Models;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -60,7 +57,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] UserCreateDTO user) //TODO create normal registerDto
+        public IActionResult Register([FromBody] UserForManipulationDTO user) //TODO create normal registerDto
         {
             _serviceManager.User.CreateUser(user);
             return CreatedAtAction(nameof(Register), user);

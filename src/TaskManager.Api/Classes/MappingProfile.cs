@@ -1,7 +1,7 @@
 using AutoMapper;
 using TaskManager.Models;
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Classes
 {
@@ -16,12 +16,12 @@ namespace TaskManager.Api.Classes
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<UserAccess, UserAccessDTO>().ReverseMap();
 
-            CreateMap<Attachment, AttachmentCreateDTO>().ReverseMap();
-            CreateMap<Project, ProjectCreateDTO>().ReverseMap();
-            CreateMap<TaskManager.Models.Task, TaskCreateDTO>().ReverseMap();
-            CreateMap<TaskStatusLog, TaskStatusLogCreateDTO>().ReverseMap();
-            CreateMap<User, UserCreateDTO>().ReverseMap();
-            CreateMap<UserAccess, UserAccessCreateDTO>().ReverseMap();
+            CreateMap<Attachment, AttachmentForManipulationDTO>().ReverseMap();
+            CreateMap<Project, ProjectForManipulationDTO>().ReverseMap();
+            CreateMap<TaskManager.Models.Task, TaskForManipulationDTO>().ReverseMap();
+            CreateMap<TaskStatusLog, TaskStatusLogForManipulationDTO>().ReverseMap();
+            CreateMap<User, UserForManipulationDTO>().ReverseMap();
+            CreateMap<UserAccess, UserAccessForManipulationDTO>().ReverseMap();
         }
     }
 }

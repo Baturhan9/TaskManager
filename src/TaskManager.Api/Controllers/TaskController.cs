@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -42,7 +41,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTask([FromBody] TaskCreateDTO task)
+        public IActionResult CreateTask([FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
             {
@@ -53,7 +52,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, [FromBody] TaskCreateDTO task)
+        public IActionResult UpdateTask(int id, [FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
             {

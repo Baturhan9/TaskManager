@@ -2,8 +2,8 @@ using AutoMapper;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Services
 {
@@ -18,7 +18,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void CreateUserAccess(UserAccessCreateDTO userAccess)
+        public void CreateUserAccess(UserAccessForManipulationDTO userAccess)
         {
             var userAccessDB = _mapper.Map<Models.UserAccess>(userAccess);
             _repositoryManager.UserAccess.CreateUserAccess(userAccessDB);
@@ -67,7 +67,7 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<UserAccessDTO>>(userAccess);
         }
 
-        public void UpdateUserAccess(int userAccessId, UserAccessCreateDTO userAccess)
+        public void UpdateUserAccess(int userAccessId, UserAccessForManipulationDTO userAccess)
         {
             var userAccessDB = _repositoryManager.UserAccess.GetUserAccess(
                 userAccessId,

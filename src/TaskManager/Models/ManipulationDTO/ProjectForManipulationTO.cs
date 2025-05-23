@@ -1,6 +1,6 @@
-namespace TaskManager.Models.CreateModelObjects
+namespace TaskManager.Models.ManipulationDTO
 {
-    public class ProjectCreateDTO
+    public class ProjectForManipulationDTO
     {
         public string ShortName { get; init; } = string.Empty;
         public string FullName { get; init; } = string.Empty;

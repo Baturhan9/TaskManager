@@ -1,6 +1,6 @@
-namespace TaskManager.Models.CreateModelObjects
+namespace TaskManager.Models.ManipulationDTO
 {
-    public class TaskStatusLogCreateDTO
+    public class TaskStatusLogForManipulationDTO
     {
         public int? TaskId { get; init; }
         public int? UserId { get; init; }

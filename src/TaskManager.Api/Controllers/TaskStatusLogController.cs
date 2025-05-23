@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Interfaces.Services;
-using TaskManager.Models.CreateModelObjects;
-using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
@@ -51,7 +50,9 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateTaskStatusLog([FromBody] TaskStatusLogCreateDTO taskStatusLog)
+        public IActionResult CreateTaskStatusLog(
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
+        )
         {
             if (taskStatusLog == null)
             {
@@ -62,7 +63,10 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateTaskStatusLog(int id, [FromBody] TaskStatusLogCreateDTO taskStatusLog)
+        public IActionResult UpdateTaskStatusLog(
+            int id,
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
+        )
         {
             if (taskStatusLog == null)
             {

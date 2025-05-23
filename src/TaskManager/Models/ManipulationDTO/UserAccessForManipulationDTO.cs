@@ -1,6 +1,6 @@
-namespace TaskManager.Models.CreateModelObjects
+namespace TaskManager.Models.ManipulationDTO
 {
-    public class UserAccessCreateDTO
+    public class UserAccessForManipulationDTO
     {
         public int? UserId { get; init; }
         public int? ProjectId { get; init; }

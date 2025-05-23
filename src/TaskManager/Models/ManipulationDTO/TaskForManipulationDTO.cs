@@ -1,6 +1,6 @@
-namespace TaskManager.Models.CreateModelObjects
+namespace TaskManager.Models.ManipulationDTO
 {
-    public class TaskCreateDTO
+    public class TaskForManipulationDTO
     {
         public required string Title { get; init; }
         public string? Description { get; init; }

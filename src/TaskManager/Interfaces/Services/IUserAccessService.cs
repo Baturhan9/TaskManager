@@ -1,5 +1,5 @@
-using TaskManager.Models.CreateModelObjects;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Interfaces.Services
 {
@@ -8,8 +8,8 @@ namespace TaskManager.Interfaces.Services
         IEnumerable<UserAccessDTO> GetUserAccesses(bool trackChanges);
         IEnumerable<UserAccessDTO> GetUserAccessesByUserId(int userId, bool trackChanges);
         UserAccessDTO GetUserAccess(int userAccessId, bool trackChanges);
-        void CreateUserAccess(UserAccessCreateDTO userAccess);
-        void UpdateUserAccess(int userAccessId, UserAccessCreateDTO userAccess);
+        void CreateUserAccess(UserAccessForManipulationDTO userAccess);
+        void UpdateUserAccess(int userAccessId, UserAccessForManipulationDTO userAccess);
         void DeleteUserAccess(int userAccessId);
     }
 }
