@@ -4,7 +4,9 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using TaskManager.Api.Models;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
@@ -15,11 +17,13 @@ namespace TaskManager.Api.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IServiceManager _serviceManager;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(ILogger<AuthController> logger, IServiceManager serviceManager)
+        public AuthController(ILogger<AuthController> logger, IServiceManager serviceManager, IConfiguration configuration)
         {
             _logger = logger;
             _serviceManager = serviceManager;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -31,25 +35,8 @@ namespace TaskManager.Api.Controllers
                 trackChanges: false
             );
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-            };
 
-            var jwt = new JwtSecurityToken(
-                issuer: "Jwt:Issuer",
-                audience: "Jwt:Audience",
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Jwt:Key")),
-                    SecurityAlgorithms.HmacSha256
-                )
-            );
-
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            string encodedJwt = GenerateToken(user);
 
             var response = new { userId = user.UserId, accessToken = encodedJwt };
 
@@ -61,6 +48,30 @@ namespace TaskManager.Api.Controllers
         {
             _serviceManager.User.CreateUser(user);
             return CreatedAtAction(nameof(Register), user);
+        }
+
+        private string GenerateToken(UserDTO user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+            };
+
+            var jwt = new JwtSecurityToken(
+                issuer: _configuration.GetValue<string>(SystemEnvironments.JWT_ISSUER),
+                audience: _configuration.GetValue<string>(SystemEnvironments.JWT_AUDIENCE),
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>(SystemEnvironments.JWT_KEY))),
+                    SecurityAlgorithms.HmacSha256
+                )
+            );
+
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            return encodedJwt;
         }
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
@@ -8,6 +9,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TaskController : ControllerBase
     {
         private readonly ILogger<TaskController> _logger;
@@ -75,5 +77,35 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
+
+        [HttpPut("{id}/testing")]
+        [Authorize(Policy = UserRoles.Tester)]
+        public IActionResult TestTask(int id)
+        {
+            return Ok("The task is tested");
+        }
+
+        [HttpPut("{id}/review")]
+        [Authorize(Policy = UserRoles.Senior)]
+        public IActionResult ReviewTask(int id)
+        {
+            return Ok("The task is reviewed");
+        }
+
+        [HttpPut("{id}/admin")]
+        [Authorize(Policy = UserRoles.Admin)]
+        public IActionResult AdminTask(int id)
+        {
+            return Ok("This is only for admin");
+        }
+
+        [HttpPut("{id}/dev")]
+        [Authorize(Policy = UserRoles.Developer)]
+        public IActionResult JustDev(int id)
+        {
+            return Ok("this can everyone");
+        }
+
+
     }
 }

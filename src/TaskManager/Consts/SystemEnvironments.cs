@@ -3,5 +3,9 @@ namespace TaskManager.Consts
     public static class SystemEnvironments
     {
         public const string POSTGRES_CONNECTION_STRING = "POSTGRES_CONNECTION_STRING";
+
+        public const string JWT_ISSUER = "JWT:ISSUER";
+        public const string JWT_AUDIENCE = "JWT:AUDIENCE";
+        public const string JWT_KEY = "JWT:KEY";
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using TaskManager.Api.Classes;
 using TaskManager.Api.Classes.SwaggerFilters;
 using TaskManager.Consts;
@@ -36,7 +37,10 @@ namespace TaskManager.Api.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMyAuthentication(this IServiceCollection services)
+        public static IServiceCollection AddMyAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             services
                 .AddAuthentication(options =>
@@ -52,10 +56,14 @@ namespace TaskManager.Api.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "Jwt:Issuer", // TODO This is not Safe
-                        ValidAudience = "Jwt:Audience",
+                        ValidIssuer = configuration.GetValue<string>(SystemEnvironments.JWT_ISSUER),
+                        ValidAudience = configuration.GetValue<string>(
+                            SystemEnvironments.JWT_AUDIENCE
+                        ),
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("Jwt:Key")
+                            Encoding.UTF8.GetBytes(
+                                configuration.GetValue<string>(SystemEnvironments.JWT_KEY)
+                            )
                         ),
                     };
                 });
@@ -127,7 +135,27 @@ namespace TaskManager.Api.Extensions
         {
             services.AddSwaggerGen(options =>
             {
-                // Для System.Text.Json
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                };
+
+                options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                options.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement { { securityScheme, Array.Empty<string>() } }
+                );
+
                 options.SchemaFilter<EnumSchemaFilter>();
             });
             return services;
