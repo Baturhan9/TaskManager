@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
 
@@ -6,6 +8,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserAccessController : ControllerBase
     {
         private readonly ILogger<UserAccessController> _logger;
@@ -21,6 +24,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult GetUserAccesses()
         {
             var userAccesses = _serviceManager.UserAccess.GetUserAccesses(trackChanges: false);
@@ -28,6 +32,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult GetUserAccess(int id)
         {
             var userAccess = _serviceManager.UserAccess.GetUserAccess(id, trackChanges: false);
@@ -35,6 +40,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetUserAccessByUserId(int userId)
         {
             var userAccess = _serviceManager.UserAccess.GetUserAccessesByUserId(
@@ -45,6 +51,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult CreateUserAccess([FromBody] UserAccessForManipulationDTO userAccess)
         {
             if (userAccess == null)
@@ -60,6 +67,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult UpdateUserAccess(
             int id,
             [FromBody] UserAccessForManipulationDTO userAccess
@@ -74,6 +82,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult DeleteUserAccess(int id)
         {
             _serviceManager.UserAccess.DeleteUserAccess(id);
