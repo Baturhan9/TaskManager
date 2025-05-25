@@ -25,10 +25,11 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetAttachments(int taskId)
+        public IActionResult GetAttachments(int taskId, [FromQuery] int userId)
         {
             var attachments = _serviceManager.Attachment.GetAttachments(
                 taskId,
+                userId,
                 trackChanges: false
             );
             return Ok(attachments);
@@ -36,11 +37,12 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetAttachment(int taskId, int id)
+        public IActionResult GetAttachment(int taskId, int id, [FromQuery] int userId)
         {
             var attachment = _serviceManager.Attachment.GetAttachment(
                 taskId,
                 id,
+                userId,
                 trackChanges: false
             );
             return Ok(attachment);
@@ -50,14 +52,19 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateAttachment(
             int taskId,
-            [FromBody] AttachmentForManipulationDTO attachment
+            [FromBody] AttachmentForManipulationDTO attachment,
+            [FromQuery] int userId
         )
         {
             if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }
-            var attachmentDB = _serviceManager.Attachment.CreateAttachment(taskId, attachment);
+            var attachmentDB = _serviceManager.Attachment.CreateAttachment(
+                taskId,
+                userId,
+                attachment
+            );
             return CreatedAtAction(
                 nameof(GetAttachment),
                 new { id = attachmentDB.AttachmentId },
@@ -70,22 +77,23 @@ namespace TaskManager.Api.Controllers
         public IActionResult UpdateAttachment(
             int taskId,
             int id,
-            [FromBody] AttachmentForManipulationDTO attachment
+            [FromBody] AttachmentForManipulationDTO attachment,
+            [FromQuery] int userId
         )
         {
             if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }
-            _serviceManager.Attachment.UpdateAttachment(taskId, id, attachment);
+            _serviceManager.Attachment.UpdateAttachment(taskId, id, userId, attachment);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult DeleteAttachment(int taskId, int id)
+        public IActionResult DeleteAttachment(int taskId, int id, [FromQuery] int userId)
         {
-            _serviceManager.Attachment.DeleteAttachment(taskId, id);
+            _serviceManager.Attachment.DeleteAttachment(taskId, id, userId);
             return NoContent();
         }
     }
