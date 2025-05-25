@@ -19,17 +19,26 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public AttachmentDTO CreateAttachment(AttachmentForManipulationDTO attachment)
+        public AttachmentDTO CreateAttachment(int taskId, AttachmentForManipulationDTO attachment)
         {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+
             var attachmentDB = _mapper.Map<Attachment>(attachment);
             _repositoryManager.Attachment.CreateAttachment(attachmentDB);
             _repositoryManager.Save();
             return _mapper.Map<AttachmentDTO>(attachmentDB);
         }
 
-        public void DeleteAttachment(int attachmentId)
+        public void DeleteAttachment(int taskId, int attachmentId)
         {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+
             var attachment = _repositoryManager.Attachment.GetAttachment(
+                taskId,
                 attachmentId,
                 trackChanges: false
             );
@@ -40,9 +49,14 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public AttachmentDTO GetAttachment(int attachmentId, bool trackChanges)
+        public AttachmentDTO GetAttachment(int taskId, int attachmentId, bool trackChanges)
         {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+
             var attachment = _repositoryManager.Attachment.GetAttachment(
+                taskId,
                 attachmentId,
                 trackChanges
             );
@@ -52,24 +66,23 @@ namespace TaskManager.Services
             return _mapper.Map<AttachmentDTO>(attachment);
         }
 
-        public IEnumerable<AttachmentDTO> GetAttachments(bool trackChanges)
+        public IEnumerable<AttachmentDTO> GetAttachments(int taskId, bool trackChanges)
         {
-            var attachments = _repositoryManager.Attachment.GetAttachments(trackChanges);
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+            var attachments = _repositoryManager.Attachment.GetAttachments(taskId, trackChanges);
             return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
         }
 
-        public IEnumerable<AttachmentDTO> GetAttachmentsByTaskId(int taskId, bool trackChanges)
-        {
-            var attachments = _repositoryManager.Attachment.GetAttachmentsByTaskId(
-                taskId,
-                trackChanges
-            );
-            return _mapper.Map<IEnumerable<AttachmentDTO>>(attachments);
-        }
-
-        public void UpdateAttachment(int attachmentId, AttachmentForManipulationDTO attachment)
+        public void UpdateAttachment(
+            int taskId,
+            int attachmentId,
+            AttachmentForManipulationDTO attachment
+        )
         {
             var attachmentDB = _repositoryManager.Attachment.GetAttachment(
+                taskId,
                 attachmentId,
                 trackChanges: true
             );
@@ -78,6 +91,29 @@ namespace TaskManager.Services
 
             _mapper.Map(attachment, attachmentDB);
             _repositoryManager.Save();
+        }
+
+        private Attachment TryGetAttachment(int taskId, int userId, int attachmentId)
+        {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            // var access = _repositoryManager.Access.GetAccess();
+
+            var attachment = _repositoryManager.Attachment.GetAttachment(
+                taskId,
+                attachmentId,
+                trackChanges: false
+            );
+            if (attachment is null)
+                throw new NotFoundAttachmentException(attachmentId);
+
+            return attachment;
         }
     }
 }

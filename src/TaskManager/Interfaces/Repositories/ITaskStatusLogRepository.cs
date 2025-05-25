@@ -4,12 +4,8 @@ namespace TaskManager.Interfaces.Repositories
 {
     public interface ITaskStatusLogRepository
     {
-        IEnumerable<TaskStatusLog> GetTaskStatusLogs(bool trackChanges);
-        IEnumerable<TaskStatusLog> GetTaskStatusLogsByTaskId(
-            int taskStatusLogId,
-            bool trackChanges
-        );
-        TaskStatusLog GetTaskStatusLog(int taskId, bool trackChanges);
+        IEnumerable<TaskStatusLog> GetTaskStatusLogs(int taskId, bool trackChanges);
+        TaskStatusLog GetTaskStatusLog(int taskId, int taskStatusLogId, bool trackChanges);
         void DeleteTaskStatusLog(TaskStatusLog taskStatusLog);
         void CreateTaskStatusLog(TaskStatusLog taskStatusLog);
     }
