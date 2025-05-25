@@ -1,4 +1,5 @@
 using AutoMapper;
+using TaskManager.Exceptions.ForbiddenExceptions;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
@@ -21,23 +22,21 @@ namespace TaskManager.Services
 
         public TaskStatusLogDTO CreateTaskStatusLog(
             int taskId,
+            int userId,
             TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
-            if (task is null)
-                throw new NotFoundTaskException(taskId);
+            CheckPermission(taskId, userId);
             var taskStatusLogDB = _mapper.Map<TaskStatusLog>(taskStatusLog);
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
             _repositoryManager.Save();
             return _mapper.Map<TaskStatusLogDTO>(taskStatusLogDB);
         }
 
-        public void DeleteTaskStatusLog(int taskId, int taskStatusLogId)
+        public void DeleteTaskStatusLog(int taskId, int taskStatusLogId, int userId)
         {
-            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
-            if (task is null)
-                throw new NotFoundTaskException(taskId);
+            CheckPermission(taskId, userId);
+
             var taskStatusLog = _repositoryManager.TaskStatusLog.GetTaskStatusLog(
                 taskId,
                 taskStatusLogId,
@@ -50,11 +49,10 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public TaskStatusLogDTO GetTaskStatusLog(int taskId, int taskStatusLogId, bool trackChanges)
+        public TaskStatusLogDTO GetTaskStatusLog(int taskId, int taskStatusLogId, int userId, bool trackChanges)
         {
-            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
-            if (task is null)
-                throw new NotFoundTaskException(taskId);
+            CheckPermission(taskId, userId);
+
             var taskStatusLog = _repositoryManager.TaskStatusLog.GetTaskStatusLog(
                 taskId,
                 taskStatusLogId,
@@ -66,11 +64,10 @@ namespace TaskManager.Services
             return _mapper.Map<TaskStatusLogDTO>(taskStatusLog);
         }
 
-        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(int taskId, bool trackChanges)
+        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(int taskId, int userId, bool trackChanges)
         {
-            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
-            if (task is null)
-                throw new NotFoundTaskException(taskId);
+            CheckPermission(taskId, userId);
+
             var taskStatusLogs = _repositoryManager.TaskStatusLog.GetTaskStatusLogs(
                 taskId,
                 trackChanges
@@ -81,10 +78,12 @@ namespace TaskManager.Services
         public void UpdateTaskStatusLog(
             int taskId,
             int taskStatusLogId,
+            int userId,
             TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            CheckPermission(taskId, userId);
+
             var taskStatusLogDB = _repositoryManager.TaskStatusLog.GetTaskStatusLog(
                 taskId,
                 taskStatusLogId,
@@ -95,6 +94,23 @@ namespace TaskManager.Services
 
             _mapper.Map(taskStatusLog, taskStatusLogDB);
             _repositoryManager.Save();
+        }
+
+        private void CheckPermission(int taskId, int userId)
+        {
+            var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
+            if (task is null)
+                throw new NotFoundTaskException(taskId);
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+            var access = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
+                userId,
+                task.ProjectId.Value,
+                trackChanges: false
+            );
+            if (access is null)
+                throw new ProjectForbiddenException(task.ProjectId.Value);
         }
     }
 }
