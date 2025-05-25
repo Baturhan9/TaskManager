@@ -6,7 +6,7 @@ using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks/{taskId}/logs")]
     [ApiController]
     [Authorize]
     public class TaskStatusLogController : ControllerBase

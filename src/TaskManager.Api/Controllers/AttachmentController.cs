@@ -6,7 +6,7 @@ using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks/{taskId}/attachments")]
     [ApiController]
     [Authorize]
     public class AttachmentController : ControllerBase
