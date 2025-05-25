@@ -46,44 +46,14 @@ namespace TaskManager.Services
 
         public void DeleteProject(int projectId, int userId)
         {
-            var project = _repositoryManager.Project.GetProject(projectId, trackChanges: false);
-            if (project is null)
-                throw new NotFoundProjectException(projectId);
-
-            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
-            if (user is null)
-                throw new NotFoundUserException(userId);
-
-            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
-                userId,
-                projectId,
-                trackChanges: false
-            );
-            if (userAccess is null)
-                throw new ProjectForbiddenException(projectId);
-
+            var project = TryGetProject(projectId, userId, trackChanges: false);
             _repositoryManager.Project.DeleteProject(project);
             _repositoryManager.Save();
         }
 
         public ProjectDTO GetProject(int projectId, int userId, bool trackChanges)
         {
-            var project = _repositoryManager.Project.GetProject(projectId, trackChanges);
-            if (project is null)
-                throw new NotFoundProjectException(projectId);
-
-            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
-            if (user is null)
-                throw new NotFoundUserException(userId);
-
-            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
-                userId,
-                projectId,
-                trackChanges: false
-            );
-            if (userAccess is null)
-                throw new ProjectForbiddenException(projectId);
-
+            var project = TryGetProject(projectId, userId, trackChanges);
             return _mapper.Map<ProjectDTO>(project);
         }
 
@@ -106,7 +76,14 @@ namespace TaskManager.Services
 
         public void UpdateProject(int projectId, int userId, ProjectForManipulationDTO project)
         {
-            var projectDB = _repositoryManager.Project.GetProject(projectId, trackChanges: true);
+            var projectDB = TryGetProject(projectId, userId, trackChanges: true);
+            _mapper.Map(project, projectDB);
+            _repositoryManager.Save();
+        }
+
+        private Project TryGetProject(int projectId, int userId, bool trackChanges)
+        {
+            var projectDB = _repositoryManager.Project.GetProject(projectId, trackChanges);
             if (projectDB is null)
                 throw new NotFoundProjectException(projectId);
 
@@ -114,12 +91,15 @@ namespace TaskManager.Services
             if (user is null)
                 throw new NotFoundUserException();
 
-            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(userId, projectId, trackChanges: false);
+            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
+                userId,
+                projectId,
+                trackChanges: false
+            );
             if (userAccess is null)
                 throw new ProjectForbiddenException(projectId);
 
-            _mapper.Map(project, projectDB);
-            _repositoryManager.Save();
+            return projectDB;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasks([FromQuery] int userId)
         {
-            var tasks = _serviceManager.Task.GetTasks(trackChanges: false);
+            var tasks = _serviceManager.Task.GetTasks(userId, trackChanges: false);
             return Ok(tasks);
         }
 
@@ -33,7 +33,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTask(int id, [FromQuery] int userId)
         {
-            var task = _serviceManager.Task.GetTask(id, trackChanges: false);
+            var task = _serviceManager.Task.GetTask(id, userId, trackChanges: false);
             return Ok(task);
         }
 
@@ -56,7 +56,7 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("Task is null");
             }
-            var taskDB = _serviceManager.Task.CreateTask(task);
+            var taskDB = _serviceManager.Task.CreateTask(userId, task);
             return CreatedAtAction(nameof(GetTask), new { id = taskDB.TaskId }, taskDB);
         }
 
@@ -72,7 +72,7 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("Task is null");
             }
-            _serviceManager.Task.UpdateTask(id, task);
+            _serviceManager.Task.UpdateTask(id, userId, task);
             return NoContent();
         }
 
@@ -80,7 +80,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Senior)]
         public IActionResult DeleteTask(int id, [FromQuery] int userId)
         {
-            _serviceManager.Task.DeleteTask(id);
+            _serviceManager.Task.DeleteTask(id, userId);
             return NoContent();
         }
 
@@ -90,7 +90,7 @@ namespace TaskManager.Api.Controllers
             int id,
             [FromBody] AssignmentModel assignment,
             [FromQuery] int userId
-        ) // TODO: Think about using Query instead of Body
+        )
         {
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
