@@ -23,7 +23,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTasks()
+        public IActionResult GetTasks([FromQuery] int userId)
         {
             var tasks = _serviceManager.Task.GetTasks(trackChanges: false);
             return Ok(tasks);
@@ -31,7 +31,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTask(int id)
+        public IActionResult GetTask(int id, [FromQuery] int userId)
         {
             var task = _serviceManager.Task.GetTask(id, trackChanges: false);
             return Ok(task);
@@ -47,7 +47,10 @@ namespace TaskManager.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult CreateTask([FromBody] TaskForManipulationDTO task)
+        public IActionResult CreateTask(
+            [FromBody] TaskForManipulationDTO task,
+            [FromQuery] int userId
+        )
         {
             if (task == null)
             {
@@ -59,7 +62,11 @@ namespace TaskManager.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult UpdateTask(int id, [FromBody] TaskForManipulationDTO task)
+        public IActionResult UpdateTask(
+            int id,
+            [FromBody] TaskForManipulationDTO task,
+            [FromQuery] int userId
+        )
         {
             if (task == null)
             {
@@ -70,8 +77,8 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult DeleteTask(int id)
+        [Authorize(Policy = UserRoles.Senior)]
+        public IActionResult DeleteTask(int id, [FromQuery] int userId)
         {
             _serviceManager.Task.DeleteTask(id);
             return NoContent();
@@ -79,7 +86,11 @@ namespace TaskManager.Api.Controllers
 
         [HttpPatch("{id}/assign")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment) // TODO: Think about using Query instead of Body
+        public IActionResult AssignTask(
+            int id,
+            [FromBody] AssignmentModel assignment,
+            [FromQuery] int userId
+        ) // TODO: Think about using Query instead of Body
         {
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();

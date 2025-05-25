@@ -22,7 +22,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetProjects()
+        public IActionResult GetProjects([FromQuery] int userId)
         {
             var projects = _serviceManager.Project.GetProjects(trackChanges: false);
             return Ok(projects);
@@ -30,7 +30,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetProject(int id)
+        public IActionResult GetProject(int id, [FromQuery] int userId)
         {
             var project = _serviceManager.Project.GetProject(id, trackChanges: false);
             return Ok(project);
@@ -38,7 +38,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}/tasks")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTasksByProjectId(int id)
+        public IActionResult GetTasksByProjectId(int id, [FromQuery] int userId)
         {
             var tasks = _serviceManager.Task.GetTasksByProjectId(id, trackChanges: false);
             return Ok(tasks);
@@ -46,7 +46,10 @@ namespace TaskManager.Api.Controllers
 
         [HttpPost]
         [Authorize(Policy = UserRoles.Senior)]
-        public IActionResult CreateProject([FromBody] ProjectForManipulationDTO project)
+        public IActionResult CreateProject(
+            [FromBody] ProjectForManipulationDTO project,
+            [FromQuery] int userId
+        )
         {
             if (project == null)
             {
@@ -58,7 +61,11 @@ namespace TaskManager.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Policy = UserRoles.Senior)]
-        public IActionResult UpdateProject(int id, [FromBody] ProjectForManipulationDTO project)
+        public IActionResult UpdateProject(
+            int id,
+            [FromBody] ProjectForManipulationDTO project,
+            [FromQuery] int userId
+        )
         {
             if (project == null)
             {
@@ -70,7 +77,7 @@ namespace TaskManager.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = UserRoles.Senior)]
-        public IActionResult DeleteProject(int id)
+        public IActionResult DeleteProject(int id, [FromQuery] int userId)
         {
             _serviceManager.Project.DeleteProject(id);
             return NoContent();
