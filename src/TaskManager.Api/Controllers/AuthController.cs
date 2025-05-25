@@ -19,7 +19,11 @@ namespace TaskManager.Api.Controllers
         private readonly IServiceManager _serviceManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(ILogger<AuthController> logger, IServiceManager serviceManager, IConfiguration configuration)
+        public AuthController(
+            ILogger<AuthController> logger,
+            IServiceManager serviceManager,
+            IConfiguration configuration
+        )
         {
             _logger = logger;
             _serviceManager = serviceManager;
@@ -34,7 +38,6 @@ namespace TaskManager.Api.Controllers
                 loginDto.Password,
                 trackChanges: false
             );
-
 
             string encodedJwt = GenerateToken(user);
 
@@ -65,7 +68,11 @@ namespace TaskManager.Api.Controllers
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>(SystemEnvironments.JWT_KEY))),
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            _configuration.GetValue<string>(SystemEnvironments.JWT_KEY)
+                        )
+                    ),
                     SecurityAlgorithms.HmacSha256
                 )
             );

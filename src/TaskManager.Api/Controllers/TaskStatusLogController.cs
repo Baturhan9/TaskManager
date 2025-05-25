@@ -25,9 +25,10 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTaskStatusLogs()
+        public IActionResult GetTaskStatusLogs(int taskId)
         {
             var taskStatusLogs = _serviceManager.TaskStatusLog.GetTaskStatusLogs(
+                taskId,
                 trackChanges: false
             );
             return Ok(taskStatusLogs);
@@ -35,21 +36,11 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTaskStatusLog(int id)
+        public IActionResult GetTaskStatusLog(int taskId, int id)
         {
             var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLog(
-                id,
-                trackChanges: false
-            );
-            return Ok(taskStatusLog);
-        }
-
-        [HttpGet("/task/{taskId}")]
-        [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTaskStatusLogByTaskId(int taskId)
-        {
-            var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLogsByTaskId(
                 taskId,
+                id,
                 trackChanges: false
             );
             return Ok(taskStatusLog);
@@ -58,6 +49,7 @@ namespace TaskManager.Api.Controllers
         [HttpPost]
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateTaskStatusLog(
+            int taskId,
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
@@ -65,7 +57,10 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            var taskStatusLogDB = _serviceManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLog);
+            var taskStatusLogDB = _serviceManager.TaskStatusLog.CreateTaskStatusLog(
+                taskId,
+                taskStatusLog
+            );
             return CreatedAtAction(
                 nameof(GetTaskStatusLog),
                 new { id = taskStatusLogDB.TaskStatusLogId },
@@ -76,6 +71,7 @@ namespace TaskManager.Api.Controllers
         [HttpPut("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult UpdateTaskStatusLog(
+            int taskId,
             int id,
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
@@ -84,15 +80,15 @@ namespace TaskManager.Api.Controllers
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(id, taskStatusLog);
+            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(taskId, id, taskStatusLog);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult DeleteTaskStatusLog(int id)
+        public IActionResult DeleteTaskStatusLog(int taskId, int id)
         {
-            _serviceManager.TaskStatusLog.DeleteTaskStatusLog(id);
+            _serviceManager.TaskStatusLog.DeleteTaskStatusLog(taskId, id);
             return NoContent();
         }
     }

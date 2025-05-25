@@ -8,16 +8,16 @@ namespace TaskManager.Repositories
         public TaskStatusLogRepository(TaskManagerContext context)
             : base(context) { }
 
-        public IEnumerable<TaskStatusLog> GetTaskStatusLogs(bool trackChanges) =>
-            FindAll(trackChanges).OrderBy(t => t.TaskId).ToList();
+        public IEnumerable<TaskStatusLog> GetTaskStatusLogs(int taskId, bool trackChanges) =>
+            FindByCondition(l => l.TaskId.Equals(taskId), trackChanges)
+                .OrderBy(t => t.DateUpdate)
+                .ToList();
 
-        public IEnumerable<TaskStatusLog> GetTaskStatusLogsByTaskId(
-            int taskId,
-            bool trackChanges
-        ) => FindByCondition(t => t.TaskId.Equals(taskId), trackChanges).ToList();
-
-        public TaskStatusLog GetTaskStatusLog(int taskStatusLogId, bool trackChanges) =>
-            FindByCondition(t => t.TaskStatusId.Equals(taskStatusLogId), trackChanges)
+        public TaskStatusLog GetTaskStatusLog(int taskId, int taskStatusLogId, bool trackChanges) =>
+            FindByCondition(
+                    t => t.TaskStatusId.Equals(taskStatusLogId) &&
+                    t.TaskId.Equals(taskId), trackChanges
+                )
                 .SingleOrDefault();
 
         public void DeleteTaskStatusLog(TaskStatusLog taskStatusLog) => Delete(taskStatusLog);

@@ -19,10 +19,7 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public AttachmentDTO CreateAttachment(
-            int taskId,
-            AttachmentForManipulationDTO attachment
-        )
+        public AttachmentDTO CreateAttachment(int taskId, AttachmentForManipulationDTO attachment)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
             if (task is null)
