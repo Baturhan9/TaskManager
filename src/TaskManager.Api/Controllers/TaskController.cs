@@ -7,7 +7,7 @@ using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks")]
     [ApiController]
     [Authorize]
     public class TaskController : ControllerBase
@@ -84,6 +84,5 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
-
     }
 }

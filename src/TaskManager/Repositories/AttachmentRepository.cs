@@ -12,14 +12,16 @@ namespace TaskManager.Repositories
 
         public void DeleteAttachment(Attachment attachment) => Delete(attachment);
 
-        public Attachment GetAttachment(int attachmentId, bool trackChanges) =>
-            FindByCondition(a => a.AttachmentId.Equals(attachmentId), trackChanges)
+        public Attachment GetAttachment(int taskId, int attachmentId, bool trackChanges) =>
+            FindByCondition(
+                    a => a.AttachmentId.Equals(attachmentId) && a.TaskId.Equals(taskId),
+                    trackChanges
+                )
                 .SingleOrDefault();
 
-        public IEnumerable<Attachment> GetAttachments(bool trackChanges) =>
-            FindAll(trackChanges).OrderBy(a => a.AttachmentId).ToList();
-
-        public IEnumerable<Attachment> GetAttachmentsByTaskId(int taskId, bool trackChanges) =>
-            FindByCondition(a => a.TaskId.Equals(taskId), trackChanges).ToList();
+        public IEnumerable<Attachment> GetAttachments(int taskId, bool trackChanges) =>
+            FindByCondition(a => a.TaskId.Equals(taskId), trackChanges)
+                .OrderBy(a => a.AttachmentId)
+                .ToList();
     }
 }

@@ -6,7 +6,7 @@ using TaskManager.Models.ManipulationDTO;
 
 namespace TaskManager.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/useraccesses/")]
     [ApiController]
     [Authorize]
     public class UserAccessController : ControllerBase
