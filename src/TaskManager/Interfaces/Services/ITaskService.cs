@@ -6,13 +6,13 @@ namespace TaskManager.Interfaces.Services
 {
     public interface ITaskService
     {
-        IEnumerable<TaskDTO> GetTasks(bool trackChanges);
+        IEnumerable<TaskDTO> GetTasks(int userId, bool trackChanges);
         IEnumerable<TaskDTO> GetTasksByUserRole(int userId, TaskRoles userRole, bool trackChanges);
-        IEnumerable<TaskDTO> GetTasksByProjectId(int projectId, bool trackChanges);
-        TaskDTO GetTask(int taskId, bool trackChanges);
-        TaskDTO CreateTask(TaskForManipulationDTO task);
-        void UpdateTask(int taskId, TaskForManipulationDTO task);
-        void DeleteTask(int taskId);
-        void AssignTaskToUser(int taskId, int userId, TaskRoles role);
+        IEnumerable<TaskDTO> GetTasksByProjectId(int projectId, int userId, bool trackChanges);
+        TaskDTO GetTask(int taskId, int userId, bool trackChanges);
+        TaskDTO CreateTask(int userId, TaskForManipulationDTO task);
+        void UpdateTask(int taskId, int userId, TaskForManipulationDTO task);
+        void DeleteTask(int taskId, int userId);
+        void AssignTaskToUser(int taskId, int userId, int toUserId, TaskRoles role);
     }
 }

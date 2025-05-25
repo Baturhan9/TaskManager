@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Classes;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
@@ -9,7 +10,7 @@ namespace TaskManager.Api.Controllers
     [Route("api/projects")]
     [ApiController]
     [Authorize]
-    public class ProjectController : ControllerBase
+    public class ProjectController : ApiControllerBase
     {
         private readonly ILogger<ProjectController> _logger;
         private readonly IServiceManager _serviceManager;
@@ -24,7 +25,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProjects()
         {
-            var projects = _serviceManager.Project.GetProjects(trackChanges: false);
+            var userId = GetCurrentUserId();
+            var projects = _serviceManager.Project.GetProjects(userId, trackChanges: false);
             return Ok(projects);
         }
 
@@ -32,7 +34,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProject(int id)
         {
-            var project = _serviceManager.Project.GetProject(id, trackChanges: false);
+            var userId = GetCurrentUserId();
+            var project = _serviceManager.Project.GetProject(id, userId, trackChanges: false);
             return Ok(project);
         }
 
@@ -40,7 +43,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasksByProjectId(int id)
         {
-            var tasks = _serviceManager.Task.GetTasksByProjectId(id, trackChanges: false);
+            var userId = GetCurrentUserId();
+            var tasks = _serviceManager.Task.GetTasksByProjectId(id, userId, trackChanges: false);
             return Ok(tasks);
         }
 
@@ -48,11 +52,12 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Senior)]
         public IActionResult CreateProject([FromBody] ProjectForManipulationDTO project)
         {
-            if (project == null)
+            var userId = GetCurrentUserId();
+            if (project is null)
             {
                 return BadRequest("Project is null");
             }
-            var projectDB = _serviceManager.Project.CreateProject(project);
+            var projectDB = _serviceManager.Project.CreateProject(project, userId);
             return CreatedAtAction(nameof(GetProject), new { id = projectDB.ProjectId }, projectDB);
         }
 
@@ -60,11 +65,12 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Senior)]
         public IActionResult UpdateProject(int id, [FromBody] ProjectForManipulationDTO project)
         {
-            if (project == null)
+            var userId = GetCurrentUserId();
+            if (project is null)
             {
                 return BadRequest("Project is null");
             }
-            _serviceManager.Project.UpdateProject(id, project);
+            _serviceManager.Project.UpdateProject(id, userId, project);
             return NoContent();
         }
 
@@ -72,7 +78,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Senior)]
         public IActionResult DeleteProject(int id)
         {
-            _serviceManager.Project.DeleteProject(id);
+            var userId = GetCurrentUserId();
+            _serviceManager.Project.DeleteProject(id, userId);
             return NoContent();
         }
     }

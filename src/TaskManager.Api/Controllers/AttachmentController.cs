@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Classes;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
@@ -9,7 +10,7 @@ namespace TaskManager.Api.Controllers
     [Route("api/tasks/{taskId}/attachments")]
     [ApiController]
     [Authorize]
-    public class AttachmentController : ControllerBase
+    public class AttachmentController : ApiControllerBase
     {
         private readonly ILogger<AttachmentController> _logger;
         private readonly IServiceManager _serviceManager;
@@ -27,8 +28,10 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetAttachments(int taskId)
         {
+            var userId = GetCurrentUserId();
             var attachments = _serviceManager.Attachment.GetAttachments(
                 taskId,
+                userId,
                 trackChanges: false
             );
             return Ok(attachments);
@@ -38,9 +41,11 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetAttachment(int taskId, int id)
         {
+            var userId = GetCurrentUserId();
             var attachment = _serviceManager.Attachment.GetAttachment(
                 taskId,
                 id,
+                userId,
                 trackChanges: false
             );
             return Ok(attachment);
@@ -53,14 +58,24 @@ namespace TaskManager.Api.Controllers
             [FromBody] AttachmentForManipulationDTO attachment
         )
         {
-            if (attachment == null)
+            var userId = GetCurrentUserId();
+            if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }
-            var attachmentDB = _serviceManager.Attachment.CreateAttachment(taskId, attachment);
+            var attachmentDB = _serviceManager.Attachment.CreateAttachment(
+                taskId,
+                userId,
+                attachment
+            );
             return CreatedAtAction(
                 nameof(GetAttachment),
-                new { id = attachmentDB.AttachmentId },
+                new
+                {
+                    taskId,
+                    id = attachmentDB.AttachmentId,
+                    userId,
+                },
                 attachmentDB
             );
         }
@@ -73,11 +88,12 @@ namespace TaskManager.Api.Controllers
             [FromBody] AttachmentForManipulationDTO attachment
         )
         {
-            if (attachment == null)
+            var userId = GetCurrentUserId();
+            if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }
-            _serviceManager.Attachment.UpdateAttachment(taskId, id, attachment);
+            _serviceManager.Attachment.UpdateAttachment(taskId, id, userId, attachment);
             return NoContent();
         }
 
@@ -85,7 +101,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult DeleteAttachment(int taskId, int id)
         {
-            _serviceManager.Attachment.DeleteAttachment(taskId, id);
+            var userId = GetCurrentUserId();
+            _serviceManager.Attachment.DeleteAttachment(taskId, id, userId);
             return NoContent();
         }
     }

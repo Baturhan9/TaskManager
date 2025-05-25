@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Classes;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
@@ -9,7 +10,7 @@ namespace TaskManager.Api.Controllers
     [Route("api/tasks/{taskId}/logs")]
     [ApiController]
     [Authorize]
-    public class TaskStatusLogController : ControllerBase
+    public class TaskStatusLogController : ApiControllerBase
     {
         private readonly ILogger<TaskStatusLogController> _logger;
         private readonly IServiceManager _serviceManager;
@@ -27,8 +28,10 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLogs(int taskId)
         {
+            var userId = GetCurrentUserId();
             var taskStatusLogs = _serviceManager.TaskStatusLog.GetTaskStatusLogs(
                 taskId,
+                userId,
                 trackChanges: false
             );
             return Ok(taskStatusLogs);
@@ -38,9 +41,11 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLog(int taskId, int id)
         {
+            var userId = GetCurrentUserId();
             var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLog(
                 taskId,
                 id,
+                userId,
                 trackChanges: false
             );
             return Ok(taskStatusLog);
@@ -53,17 +58,24 @@ namespace TaskManager.Api.Controllers
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            if (taskStatusLog == null)
+            var userId = GetCurrentUserId();
+            if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
             }
             var taskStatusLogDB = _serviceManager.TaskStatusLog.CreateTaskStatusLog(
                 taskId,
+                userId,
                 taskStatusLog
             );
             return CreatedAtAction(
                 nameof(GetTaskStatusLog),
-                new { id = taskStatusLogDB.TaskStatusLogId },
+                new
+                {
+                    taskId,
+                    id = taskStatusLogDB.TaskStatusId,
+                    userId,
+                },
                 taskStatusLogDB
             );
         }
@@ -76,11 +88,12 @@ namespace TaskManager.Api.Controllers
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            if (taskStatusLog == null)
+            var userId = GetCurrentUserId();
+            if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(taskId, id, taskStatusLog);
+            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(taskId, id, userId, taskStatusLog);
             return NoContent();
         }
 
@@ -88,7 +101,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult DeleteTaskStatusLog(int taskId, int id)
         {
-            _serviceManager.TaskStatusLog.DeleteTaskStatusLog(taskId, id);
+            var userId = GetCurrentUserId();
+            _serviceManager.TaskStatusLog.DeleteTaskStatusLog(taskId, id, userId);
             return NoContent();
         }
     }

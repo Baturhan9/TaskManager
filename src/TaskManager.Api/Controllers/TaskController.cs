@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Classes;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
@@ -10,7 +11,7 @@ namespace TaskManager.Api.Controllers
     [Route("api/tasks")]
     [ApiController]
     [Authorize]
-    public class TaskController : ControllerBase
+    public class TaskController : ApiControllerBase
     {
         private readonly ILogger<TaskController> _logger;
         private readonly IServiceManager _serviceManager;
@@ -25,7 +26,8 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasks()
         {
-            var tasks = _serviceManager.Task.GetTasks(trackChanges: false);
+            var userId = GetCurrentUserId();
+            var tasks = _serviceManager.Task.GetTasks(userId, trackChanges: false);
             return Ok(tasks);
         }
 
@@ -33,14 +35,16 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTask(int id)
         {
-            var task = _serviceManager.Task.GetTask(id, trackChanges: false);
+            var userId = GetCurrentUserId();
+            var task = _serviceManager.Task.GetTask(id, userId, trackChanges: false);
             return Ok(task);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("byRole")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTasksByUserRole(int userId, [FromQuery] TaskRoles role)
+        public IActionResult GetTasksByUserRole([FromQuery] TaskRoles role)
         {
+            var userId = GetCurrentUserId();
             var tasks = _serviceManager.Task.GetTasksByUserRole(userId, role, trackChanges: false);
             return Ok(tasks);
         }
@@ -49,11 +53,12 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateTask([FromBody] TaskForManipulationDTO task)
         {
-            if (task == null)
+            var userId = GetCurrentUserId();
+            if (task is null)
             {
                 return BadRequest("Task is null");
             }
-            var taskDB = _serviceManager.Task.CreateTask(task);
+            var taskDB = _serviceManager.Task.CreateTask(userId, task);
             return CreatedAtAction(nameof(GetTask), new { id = taskDB.TaskId }, taskDB);
         }
 
@@ -61,27 +66,30 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult UpdateTask(int id, [FromBody] TaskForManipulationDTO task)
         {
-            if (task == null)
+            var userId = GetCurrentUserId();
+            if (task is null)
             {
                 return BadRequest("Task is null");
             }
-            _serviceManager.Task.UpdateTask(id, task);
+            _serviceManager.Task.UpdateTask(id, userId, task);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = UserRoles.Developer)]
+        [Authorize(Policy = UserRoles.Senior)]
         public IActionResult DeleteTask(int id)
         {
-            _serviceManager.Task.DeleteTask(id);
+            var userId = GetCurrentUserId();
+            _serviceManager.Task.DeleteTask(id, userId);
             return NoContent();
         }
 
         [HttpPatch("{id}/assign")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment) // TODO: Think about using Query instead of Body
+        public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment)
         {
-            _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
+            var userId = GetCurrentUserId();
+            _serviceManager.Task.AssignTaskToUser(id, userId, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
     }

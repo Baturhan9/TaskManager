@@ -54,7 +54,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Admin)]
         public IActionResult CreateUserAccess([FromBody] UserAccessForManipulationDTO userAccess)
         {
-            if (userAccess == null)
+            if (userAccess is null)
             {
                 return BadRequest("UserAccess is null");
             }
@@ -73,7 +73,7 @@ namespace TaskManager.Api.Controllers
             [FromBody] UserAccessForManipulationDTO userAccess
         )
         {
-            if (userAccess == null)
+            if (userAccess is null)
             {
                 return BadRequest("UserAccess is null");
             }
