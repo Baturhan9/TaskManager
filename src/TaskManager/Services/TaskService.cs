@@ -51,14 +51,14 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public void AssignTaskToUser(int taskId, int userId, TaskRoles role)
+        public void AssignTaskToUser(int taskId, int userId, int toUserId, TaskRoles role)
         {
             var task = TryGetTask(taskId, userId, trackChanges: true);
 
             if (!_roleOperation.TryGetValue(role, out var assignRole))
                 throw new BadRequestRoleException(role.ToString());
 
-            assignRole.Assign(task, userId);
+            assignRole.Assign(task, toUserId);
 
             _repositoryManager.Save();
         }

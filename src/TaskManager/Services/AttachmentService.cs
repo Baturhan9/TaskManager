@@ -100,8 +100,8 @@ namespace TaskManager.Services
                 throw new NotFoundUserException(userId);
 
             var access = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
-                task.ProjectId.Value,
                 userId,
+                task.ProjectId.Value,
                 trackChanges: false
             );
             if (access is null)

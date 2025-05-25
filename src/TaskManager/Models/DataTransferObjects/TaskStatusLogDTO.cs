@@ -2,7 +2,7 @@ namespace TaskManager.Models.DataTransferObjects
 {
     public class TaskStatusLogDTO
     {
-        public int TaskStatusLogId { get; init; }
+        public int TaskStatusId { get; init; }
         public int? TaskId { get; init; }
         public int? UserId { get; init; }
         public string? Comment { get; init; }

@@ -13,6 +13,6 @@ namespace TaskManager.Interfaces.Services
         TaskDTO CreateTask(int userId, TaskForManipulationDTO task);
         void UpdateTask(int taskId, int userId, TaskForManipulationDTO task);
         void DeleteTask(int taskId, int userId);
-        void AssignTaskToUser(int taskId, int userId, TaskRoles role);
+        void AssignTaskToUser(int taskId, int userId, int toUserId, TaskRoles role);
     }
 }

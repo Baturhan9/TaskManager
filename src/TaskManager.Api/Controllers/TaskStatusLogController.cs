@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Api.Classes;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
@@ -9,7 +10,7 @@ namespace TaskManager.Api.Controllers
     [Route("api/tasks/{taskId}/logs")]
     [ApiController]
     [Authorize]
-    public class TaskStatusLogController : ControllerBase
+    public class TaskStatusLogController : ApiControllerBase
     {
         private readonly ILogger<TaskStatusLogController> _logger;
         private readonly IServiceManager _serviceManager;
@@ -25,8 +26,9 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTaskStatusLogs(int taskId, [FromQuery] int userId)
+        public IActionResult GetTaskStatusLogs(int taskId)
         {
+            var userId = GetCurrentUserId();
             var taskStatusLogs = _serviceManager.TaskStatusLog.GetTaskStatusLogs(
                 taskId,
                 userId,
@@ -37,8 +39,9 @@ namespace TaskManager.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult GetTaskStatusLog(int taskId, int id, [FromQuery] int userId)
+        public IActionResult GetTaskStatusLog(int taskId, int id)
         {
+            var userId = GetCurrentUserId();
             var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLog(
                 taskId,
                 id,
@@ -52,10 +55,10 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateTaskStatusLog(
             int taskId,
-            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog,
-            [FromQuery] int userId
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
+            var userId = GetCurrentUserId();
             if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
@@ -67,7 +70,12 @@ namespace TaskManager.Api.Controllers
             );
             return CreatedAtAction(
                 nameof(GetTaskStatusLog),
-                new { id = taskStatusLogDB.TaskStatusLogId },
+                new
+                {
+                    taskId,
+                    id = taskStatusLogDB.TaskStatusId,
+                    userId,
+                },
                 taskStatusLogDB
             );
         }
@@ -77,22 +85,23 @@ namespace TaskManager.Api.Controllers
         public IActionResult UpdateTaskStatusLog(
             int taskId,
             int id,
-            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog,
-            [FromQuery] int userId
+            [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
+            var userId = GetCurrentUserId();
             if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
             }
-            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(taskId, id, userId,taskStatusLog);
+            _serviceManager.TaskStatusLog.UpdateTaskStatusLog(taskId, id, userId, taskStatusLog);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
-        public IActionResult DeleteTaskStatusLog(int taskId, int id,[FromQuery] int userId)
+        public IActionResult DeleteTaskStatusLog(int taskId, int id)
         {
+            var userId = GetCurrentUserId();
             _serviceManager.TaskStatusLog.DeleteTaskStatusLog(taskId, id, userId);
             return NoContent();
         }

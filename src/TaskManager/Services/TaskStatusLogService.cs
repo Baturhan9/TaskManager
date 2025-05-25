@@ -111,6 +111,7 @@ namespace TaskManager.Services
             );
             if (access is null)
                 throw new ProjectForbiddenException(task.ProjectId.Value);
+                
         }
     }
 }
