@@ -30,7 +30,7 @@ namespace TaskManager.Services
         public void DeleteUser(int userId)
         {
             var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
-            if (user == null)
+            if (user is null)
                 throw new NotFoundUserException(userId);
 
             _repositoryManager.User.DeleteUser(user);
@@ -40,7 +40,7 @@ namespace TaskManager.Services
         public UserDTO GetUser(int userId, bool trackChanges)
         {
             var user = _repositoryManager.User.GetUser(userId, trackChanges);
-            if (user == null)
+            if (user is null)
                 throw new NotFoundUserException(userId);
 
             return _mapper.Map<UserDTO>(user);
@@ -53,7 +53,7 @@ namespace TaskManager.Services
                 password,
                 trackChanges
             );
-            if (user == null)
+            if (user is null)
                 throw new NotFoundUserException();
 
             return _mapper.Map<UserDTO>(user);
@@ -68,7 +68,7 @@ namespace TaskManager.Services
         public void UpdateUser(int userId, UserForManipulationDTO user)
         {
             var userDB = _repositoryManager.User.GetUser(userId, trackChanges: true);
-            if (userDB == null)
+            if (userDB is null)
                 throw new NotFoundUserException(userId);
 
             _mapper.Map(user, userDB);

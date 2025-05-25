@@ -54,7 +54,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateAttachment([FromBody] AttachmentForManipulationDTO attachment)
         {
-            if (attachment == null)
+            if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }
@@ -73,7 +73,7 @@ namespace TaskManager.Api.Controllers
             [FromBody] AttachmentForManipulationDTO attachment
         )
         {
-            if (attachment == null)
+            if (attachment is null)
             {
                 return BadRequest("Attachment is null");
             }

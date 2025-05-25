@@ -32,7 +32,7 @@ namespace TaskManager.Services
                 userAccessId,
                 trackChanges: false
             );
-            if (userAccess == null)
+            if (userAccess is null)
                 throw new NotFoundUserAccessException(userAccessId);
 
             _repositoryManager.UserAccess.DeleteUserAccess(userAccess);
@@ -45,7 +45,7 @@ namespace TaskManager.Services
                 userAccessId,
                 trackChanges
             );
-            if (userAccess == null)
+            if (userAccess is null)
                 throw new NotFoundUserAccessException(userAccessId);
 
             return _mapper.Map<UserAccessDTO>(userAccess);
@@ -74,7 +74,7 @@ namespace TaskManager.Services
                 userAccessId,
                 trackChanges: true
             );
-            if (userAccessDB == null)
+            if (userAccessDB is null)
                 throw new NotFoundUserAccessException(userAccessId);
 
             _mapper.Map(userAccess, userAccessDB);

@@ -33,7 +33,7 @@ namespace TaskManager.Services
                 attachmentId,
                 trackChanges: false
             );
-            if (attachment == null)
+            if (attachment is null)
                 throw new NotFoundAttachmentException(attachmentId);
 
             _repositoryManager.Attachment.DeleteAttachment(attachment);
@@ -46,7 +46,7 @@ namespace TaskManager.Services
                 attachmentId,
                 trackChanges
             );
-            if (attachment == null)
+            if (attachment is null)
                 throw new NotFoundAttachmentException(attachmentId);
 
             return _mapper.Map<AttachmentDTO>(attachment);
@@ -73,7 +73,7 @@ namespace TaskManager.Services
                 attachmentId,
                 trackChanges: true
             );
-            if (attachmentDB == null)
+            if (attachmentDB is null)
                 throw new NotFoundAttachmentException(attachmentId);
 
             _mapper.Map(attachment, attachmentDB);

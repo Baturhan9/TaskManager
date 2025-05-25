@@ -24,7 +24,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProjects([FromQuery] int userId)
         {
-            var projects = _serviceManager.Project.GetProjects(trackChanges: false);
+            var projects = _serviceManager.Project.GetProjects(userId, trackChanges: false);
             return Ok(projects);
         }
 
@@ -32,7 +32,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProject(int id, [FromQuery] int userId)
         {
-            var project = _serviceManager.Project.GetProject(id, trackChanges: false);
+            var project = _serviceManager.Project.GetProject(id, userId, trackChanges: false);
             return Ok(project);
         }
 
@@ -40,7 +40,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasksByProjectId(int id, [FromQuery] int userId)
         {
-            var tasks = _serviceManager.Task.GetTasksByProjectId(id, trackChanges: false);
+            var tasks = _serviceManager.Task.GetTasksByProjectId(id, userId, trackChanges: false);
             return Ok(tasks);
         }
 
@@ -51,11 +51,11 @@ namespace TaskManager.Api.Controllers
             [FromQuery] int userId
         )
         {
-            if (project == null)
+            if (project is null)
             {
                 return BadRequest("Project is null");
             }
-            var projectDB = _serviceManager.Project.CreateProject(project);
+            var projectDB = _serviceManager.Project.CreateProject(project, userId);
             return CreatedAtAction(nameof(GetProject), new { id = projectDB.ProjectId }, projectDB);
         }
 
@@ -67,11 +67,11 @@ namespace TaskManager.Api.Controllers
             [FromQuery] int userId
         )
         {
-            if (project == null)
+            if (project is null)
             {
                 return BadRequest("Project is null");
             }
-            _serviceManager.Project.UpdateProject(id, project);
+            _serviceManager.Project.UpdateProject(id, userId, project);
             return NoContent();
         }
 
@@ -79,7 +79,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Senior)]
         public IActionResult DeleteProject(int id, [FromQuery] int userId)
         {
-            _serviceManager.Project.DeleteProject(id);
+            _serviceManager.Project.DeleteProject(id, userId);
             return NoContent();
         }
     }

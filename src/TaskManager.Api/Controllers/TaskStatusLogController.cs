@@ -61,7 +61,7 @@ namespace TaskManager.Api.Controllers
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            if (taskStatusLog == null)
+            if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
             }
@@ -80,7 +80,7 @@ namespace TaskManager.Api.Controllers
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
         {
-            if (taskStatusLog == null)
+            if (taskStatusLog is null)
             {
                 return BadRequest("TaskStatusLog is null");
             }

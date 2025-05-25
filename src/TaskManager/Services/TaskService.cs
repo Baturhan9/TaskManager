@@ -52,10 +52,10 @@ namespace TaskManager.Services
         public void AssignTaskToUser(int taskId, int userId, TaskRoles role)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
-            if (task == null)
+            if (task is null)
                 throw new NotFoundTaskException(taskId);
             var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
-            if (user == null)
+            if (user is null)
                 throw new NotFoundUserException(userId);
 
             if (!_roleOperation.TryGetValue(role, out var assignRole))
@@ -77,7 +77,7 @@ namespace TaskManager.Services
         public void DeleteTask(int taskId)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges: false);
-            if (task == null)
+            if (task is null)
                 throw new NotFoundTaskException(taskId);
 
             _repositoryManager.Task.DeleteTask(task);
@@ -87,7 +87,7 @@ namespace TaskManager.Services
         public TaskDTO GetTask(int taskId, bool trackChanges)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges);
-            if (task == null)
+            if (task is null)
                 throw new NotFoundTaskException(taskId);
 
             return _mapper.Map<TaskDTO>(task);
@@ -132,7 +132,7 @@ namespace TaskManager.Services
         public void UpdateTask(int taskId, TaskForManipulationDTO task)
         {
             var taskDB = _repositoryManager.Task.GetTask(taskId, trackChanges: true);
-            if (taskDB == null)
+            if (taskDB is null)
                 throw new NotFoundTaskException(taskId);
 
             _mapper.Map(task, taskDB);

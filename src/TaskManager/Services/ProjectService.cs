@@ -1,4 +1,5 @@
 using AutoMapper;
+using TaskManager.Exceptions.ForbiddenExceptions;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
@@ -19,44 +20,103 @@ namespace TaskManager.Services
             _mapper = mapper;
         }
 
-        public ProjectDTO CreateProject(ProjectForManipulationDTO project)
+        public ProjectDTO CreateProject(ProjectForManipulationDTO project, int userId)
         {
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
             var projectDB = _mapper.Map<Project>(project);
             _repositoryManager.Project.CreateProject(projectDB);
             _repositoryManager.Save();
-            return _mapper.Map<ProjectDTO>(projectDB);
+
+            var createdProject = _mapper.Map<ProjectDTO>(projectDB);
+
+            var userAccess = new UserAccess()
+            {
+                UserId = userId,
+                ProjectId = createdProject.ProjectId,
+            };
+
+            _repositoryManager.UserAccess.CreateUserAccess(userAccess);
+            _repositoryManager.Save();
+
+            return createdProject;
         }
 
-        public void DeleteProject(int projectId)
+        public void DeleteProject(int projectId, int userId)
         {
             var project = _repositoryManager.Project.GetProject(projectId, trackChanges: false);
-            if (project == null)
+            if (project is null)
                 throw new NotFoundProjectException(projectId);
+
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
+                userId,
+                projectId,
+                trackChanges: false
+            );
+            if (userAccess is null)
+                throw new ProjectForbiddenException(projectId);
 
             _repositoryManager.Project.DeleteProject(project);
             _repositoryManager.Save();
         }
 
-        public ProjectDTO GetProject(int projectId, bool trackChanges)
+        public ProjectDTO GetProject(int projectId, int userId, bool trackChanges)
         {
             var project = _repositoryManager.Project.GetProject(projectId, trackChanges);
-            if (project == null)
+            if (project is null)
                 throw new NotFoundProjectException(projectId);
+
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(
+                userId,
+                projectId,
+                trackChanges: false
+            );
+            if (userAccess is null)
+                throw new ProjectForbiddenException(projectId);
 
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public IEnumerable<ProjectDTO> GetProjects(bool trackChanges)
+        public IEnumerable<ProjectDTO> GetProjects(int userId, bool trackChanges)
         {
-            var projects = _repositoryManager.Project.GetProjects(trackChanges);
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException(userId);
+
+            var userAccessesProjectId = _repositoryManager
+                .UserAccess.GetUserAccessesByUserId(userId, trackChanges: false)
+                .Select(u => u.ProjectId)
+                .ToList();
+
+            var projects = _repositoryManager
+                .Project.GetProjects(trackChanges)
+                .Where(p => userAccessesProjectId.Contains(p.ProjectId));
             return _mapper.Map<IEnumerable<ProjectDTO>>(projects);
         }
 
-        public void UpdateProject(int projectId, ProjectForManipulationDTO project)
+        public void UpdateProject(int projectId, int userId, ProjectForManipulationDTO project)
         {
             var projectDB = _repositoryManager.Project.GetProject(projectId, trackChanges: true);
-            if (projectDB == null)
+            if (projectDB is null)
                 throw new NotFoundProjectException(projectId);
+
+            var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
+            if (user is null)
+                throw new NotFoundUserException();
+
+            var userAccess = _repositoryManager.UserAccess.GetUserAccessesByUserIdAndProjectId(userId, projectId, trackChanges: false);
+            if (userAccess is null)
+                throw new ProjectForbiddenException(projectId);
 
             _mapper.Map(project, projectDB);
             _repositoryManager.Save();

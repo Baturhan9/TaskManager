@@ -40,7 +40,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Admin)]
         public IActionResult CreateUser([FromBody] UserForManipulationDTO user)
         {
-            if (user == null)
+            if (user is null)
             {
                 return BadRequest("User is null");
             }
@@ -52,7 +52,7 @@ namespace TaskManager.Api.Controllers
         [Authorize(Policy = UserRoles.Admin)]
         public IActionResult UpdateUser(int id, [FromBody] UserForManipulationDTO user)
         {
-            if (user == null)
+            if (user is null)
             {
                 return BadRequest("User is null");
             }
@@ -65,7 +65,7 @@ namespace TaskManager.Api.Controllers
         public IActionResult DeleteUser(int id)
         {
             var user = _serviceManager.User.GetUser(id, trackChanges: false);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound();
             }

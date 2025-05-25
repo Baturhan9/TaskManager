@@ -33,7 +33,7 @@ namespace TaskManager.Services
                 taskStatusLogId,
                 trackChanges: false
             );
-            if (taskStatusLog == null)
+            if (taskStatusLog is null)
                 throw new NotFoundTaskStatusLogException(taskStatusLogId);
 
             _repositoryManager.TaskStatusLog.DeleteTaskStatusLog(taskStatusLog);
@@ -46,7 +46,7 @@ namespace TaskManager.Services
                 taskStatusLogId,
                 trackChanges
             );
-            if (taskStatusLog == null)
+            if (taskStatusLog is null)
                 throw new NotFoundTaskStatusLogException(taskStatusLogId);
 
             return _mapper.Map<TaskStatusLogDTO>(taskStatusLog);
@@ -83,7 +83,7 @@ namespace TaskManager.Services
                 taskStatusLogId,
                 trackChanges: true
             );
-            if (taskStatusLogDB == null)
+            if (taskStatusLogDB is null)
                 throw new NotFoundTaskStatusLogException(taskStatusLogId);
 
             _mapper.Map(taskStatusLog, taskStatusLogDB);

@@ -23,5 +23,16 @@ namespace TaskManager.Repositories
         public void DeleteUserAccess(UserAccess userAccess) => Delete(userAccess);
 
         public void CreateUserAccess(UserAccess userAccess) => Create(userAccess);
+
+        public UserAccess GetUserAccessesByUserIdAndProjectId(
+            int userId,
+            int projectId,
+            bool trackChanges
+        ) =>
+            FindByCondition(
+                    u => u.ProjectId.Equals(projectId) && u.UserId.Equals(userId),
+                    trackChanges
+                )
+                .SingleOrDefault();
     }
 }

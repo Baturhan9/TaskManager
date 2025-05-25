@@ -52,7 +52,7 @@ namespace TaskManager.Api.Controllers
             [FromQuery] int userId
         )
         {
-            if (task == null)
+            if (task is null)
             {
                 return BadRequest("Task is null");
             }
@@ -68,7 +68,7 @@ namespace TaskManager.Api.Controllers
             [FromQuery] int userId
         )
         {
-            if (task == null)
+            if (task is null)
             {
                 return BadRequest("Task is null");
             }
