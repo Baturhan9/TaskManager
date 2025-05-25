@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
 
@@ -6,6 +8,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TaskStatusLogController : ControllerBase
     {
         private readonly ILogger<TaskStatusLogController> _logger;
@@ -21,6 +24,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLogs()
         {
             var taskStatusLogs = _serviceManager.TaskStatusLog.GetTaskStatusLogs(
@@ -30,6 +34,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLog(int id)
         {
             var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLog(
@@ -40,6 +45,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("/task/{taskId}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLogByTaskId(int taskId)
         {
             var taskStatusLog = _serviceManager.TaskStatusLog.GetTaskStatusLogsByTaskId(
@@ -50,6 +56,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateTaskStatusLog(
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
         )
@@ -67,6 +74,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult UpdateTaskStatusLog(
             int id,
             [FromBody] TaskStatusLogForManipulationDTO taskStatusLog
@@ -81,6 +89,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult DeleteTaskStatusLog(int id)
         {
             _serviceManager.TaskStatusLog.DeleteTaskStatusLog(id);

@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
 
@@ -6,6 +8,7 @@ namespace TaskManager.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly ILogger<UserController> _logger;
@@ -18,6 +21,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult GetUsers()
         {
             var users = _serviceManager.User.GetUsers(trackChanges: false);
@@ -25,6 +29,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult GetUser(int id)
         {
             var user = _serviceManager.User.GetUser(id, trackChanges: false);
@@ -32,6 +37,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult CreateUser([FromBody] UserForManipulationDTO user)
         {
             if (user == null)
@@ -43,6 +49,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult UpdateUser(int id, [FromBody] UserForManipulationDTO user)
         {
             if (user == null)
@@ -54,6 +61,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Admin)]
         public IActionResult DeleteUser(int id)
         {
             var user = _serviceManager.User.GetUser(id, trackChanges: false);

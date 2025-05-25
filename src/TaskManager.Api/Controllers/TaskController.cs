@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
@@ -8,6 +9,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TaskController : ControllerBase
     {
         private readonly ILogger<TaskController> _logger;
@@ -20,6 +22,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasks()
         {
             var tasks = _serviceManager.Task.GetTasks(trackChanges: false);
@@ -27,6 +30,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTask(int id)
         {
             var task = _serviceManager.Task.GetTask(id, trackChanges: false);
@@ -34,6 +38,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasksByUserRole(int userId, [FromQuery] TaskRoles role)
         {
             var tasks = _serviceManager.Task.GetTasksByUserRole(userId, role, trackChanges: false);
@@ -41,6 +46,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateTask([FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
@@ -52,6 +58,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult UpdateTask(int id, [FromBody] TaskForManipulationDTO task)
         {
             if (task == null)
@@ -63,6 +70,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult DeleteTask(int id)
         {
             _serviceManager.Task.DeleteTask(id);
@@ -70,10 +78,12 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPatch("{id}/assign")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult AssignTask(int id, [FromBody] AssignmentModel assignment) // TODO: Think about using Query instead of Body
         {
             _serviceManager.Task.AssignTaskToUser(id, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
+
     }
 }

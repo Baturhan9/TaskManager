@@ -54,7 +54,7 @@ namespace TaskManager.Services
                 trackChanges
             );
             if (user == null)
-                throw new NotFoundException("Not found user with this email and password");
+                throw new NotFoundUserException();
 
             return _mapper.Map<UserDTO>(user);
         }

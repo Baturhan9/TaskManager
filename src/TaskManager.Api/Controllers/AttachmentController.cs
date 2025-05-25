@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
 
@@ -6,6 +8,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AttachmentController : ControllerBase
     {
         private readonly ILogger<AttachmentController> _logger;
@@ -21,6 +24,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetAttachments()
         {
             var attachments = _serviceManager.Attachment.GetAttachments(trackChanges: false);
@@ -28,6 +32,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetAttachment(int id)
         {
             var attachment = _serviceManager.Attachment.GetAttachment(id, trackChanges: false);
@@ -35,6 +40,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("task/{taskId}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetAttachmentsByTaskId(int taskId)
         {
             var attachments = _serviceManager.Attachment.GetAttachmentsByTaskId(
@@ -45,6 +51,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult CreateAttachment([FromBody] AttachmentForManipulationDTO attachment)
         {
             if (attachment == null)
@@ -60,6 +67,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult UpdateAttachment(
             int id,
             [FromBody] AttachmentForManipulationDTO attachment
@@ -74,6 +82,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult DeleteAttachment(int id)
         {
             _serviceManager.Attachment.DeleteAttachment(id);

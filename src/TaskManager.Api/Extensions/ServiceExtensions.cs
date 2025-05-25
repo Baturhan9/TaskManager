@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using TaskManager.Api.Classes;
 using TaskManager.Api.Classes.SwaggerFilters;
 using TaskManager.Consts;
@@ -36,22 +37,11 @@ namespace TaskManager.Api.Extensions
             return services;
         }
 
-        public static IServiceCollection AddMyAuthentication(this IServiceCollection services)
+        public static IServiceCollection AddMyAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
-            // can you fix this code
-            // services
-            //     .AddIdentityCore<User>(options =>
-            //     {
-            //         options.User.RequireUniqueEmail = true;
-            //         options.Password.RequireDigit = false;
-            //         options.Password.RequiredLength = 6;
-            //         options.Password.RequireNonAlphanumeric = false;
-            //         options.Password.RequireLowercase = false;
-            //         options.Password.RequireUppercase = false;
-            //     })
-            //     .AddEntityFrameworkStores<TaskManagerContext>()
-            //     .AddDefaultTokenProviders();
-
             services
                 .AddAuthentication(options =>
                 {
@@ -66,15 +56,52 @@ namespace TaskManager.Api.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "Jwt:Issuer",
-                        ValidAudience = "Jwt:Audience",
+                        ValidIssuer = configuration.GetValue<string>(SystemEnvironments.JWT_ISSUER),
+                        ValidAudience = configuration.GetValue<string>(
+                            SystemEnvironments.JWT_AUDIENCE
+                        ),
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("Jwt:Key")
+                            Encoding.UTF8.GetBytes(
+                                configuration.GetValue<string>(SystemEnvironments.JWT_KEY)
+                            )
                         ),
                     };
                 });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "Developer",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                            || ctx.User.IsInRole(UserRoles.Tester)
+                            || ctx.User.IsInRole(UserRoles.Developer)
+                        )
+                );
+
+                options.AddPolicy(
+                    "Tester",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                            || ctx.User.IsInRole(UserRoles.Tester)
+                        )
+                );
+
+                options.AddPolicy(
+                    "Senior",
+                    policy =>
+                        policy.RequireAssertion(ctx =>
+                            ctx.User.IsInRole(UserRoles.Admin)
+                            || ctx.User.IsInRole(UserRoles.Senior)
+                        )
+                );
+
+                options.AddPolicy("Admin", policy => policy.RequireRole(UserRoles.Admin));
+            });
             return services;
         }
 
@@ -108,7 +135,27 @@ namespace TaskManager.Api.Extensions
         {
             services.AddSwaggerGen(options =>
             {
-                // Для System.Text.Json
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                };
+
+                options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                options.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement { { securityScheme, Array.Empty<string>() } }
+                );
+
                 options.SchemaFilter<EnumSchemaFilter>();
             });
             return services;

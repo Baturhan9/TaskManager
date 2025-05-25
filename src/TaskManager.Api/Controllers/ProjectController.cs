@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
 
@@ -6,6 +8,7 @@ namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProjectController : ControllerBase
     {
         private readonly ILogger<ProjectController> _logger;
@@ -18,6 +21,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProjects()
         {
             var projects = _serviceManager.Project.GetProjects(trackChanges: false);
@@ -25,6 +29,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetProject(int id)
         {
             var project = _serviceManager.Project.GetProject(id, trackChanges: false);
@@ -32,6 +37,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}/tasks")]
+        [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTasksByProjectId(int id)
         {
             var tasks = _serviceManager.Task.GetTasksByProjectId(id, trackChanges: false);
@@ -39,6 +45,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = UserRoles.Senior)]
         public IActionResult CreateProject([FromBody] ProjectForManipulationDTO project)
         {
             if (project == null)
@@ -50,6 +57,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = UserRoles.Senior)]
         public IActionResult UpdateProject(int id, [FromBody] ProjectForManipulationDTO project)
         {
             if (project == null)
@@ -61,6 +69,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = UserRoles.Senior)]
         public IActionResult DeleteProject(int id)
         {
             _serviceManager.Project.DeleteProject(id);
