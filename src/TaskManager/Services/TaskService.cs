@@ -6,6 +6,7 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models;
 using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.ManipulationDTO;
 using TaskManager.Models.SystemModels;
@@ -80,6 +81,19 @@ namespace TaskManager.Services
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
+
+            // todo : maybe use common method for creation logs like CreateLog(taskId, userId, Status, comment);
+            var log = new TaskStatusLog()
+            {
+                TaskId = taskDB.TaskId,
+                UserId = userId,
+                Status = TaskStatuses.New.ToString(),
+                Comment = "Task is created",
+                DateUpdate = DateTime.UtcNow
+            };
+            _repositoryManager.TaskStatusLog.CreateTaskStatusLog(log);
+            _repositoryManager.Save();
+
             return _mapper.Map<TaskDTO>(taskDB);
         }
 

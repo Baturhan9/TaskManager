@@ -3,7 +3,7 @@ using TaskManager.Exceptions.RequestExceptions;
 
 namespace TaskManager.Consts
 {
-    public enum TaskStatus
+    public enum TaskStatuses
     {
         New,
         InProgress,
