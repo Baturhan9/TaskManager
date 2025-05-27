@@ -14,5 +14,6 @@ namespace TaskManager.Interfaces.Services
         void UpdateTask(int taskId, int userId, TaskForManipulationDTO task);
         void DeleteTask(int taskId, int userId);
         void AssignTaskToUser(int taskId, int userId, int toUserId, TaskRoles role);
+        void ChangeTaskStatus(int taskId, int userId, TaskStatuses status);
     }
 }

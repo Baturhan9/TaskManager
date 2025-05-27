@@ -6,6 +6,7 @@ using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
 using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
+using TaskManager.Models;
 using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.ManipulationDTO;
 using TaskManager.Models.SystemModels;
@@ -63,6 +64,23 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
+        public void ChangeTaskStatus(int taskId, int userId, TaskStatuses status)
+        {
+            var task = TryGetTask(taskId, userId, trackChanges: false);
+
+            var log = new TaskStatusLogForManipulationDTO()
+            {
+                TaskId = task.TaskId,
+                UserId = userId,
+                Status = status.ToString(),
+                DateUpdate = DateTime.UtcNow,
+            };
+
+            var taskStatusLogDB = _mapper.Map<TaskStatusLog>(log);
+            _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
+            _repositoryManager.Save();
+        }
+
         public TaskDTO CreateTask(int userId, TaskForManipulationDTO task)
         {
             var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
@@ -80,6 +98,20 @@ namespace TaskManager.Services
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
+
+            // todo : maybe use common method for creation logs like CreateLog(taskId, userId, Status, comment);
+            var log = new TaskStatusLog()
+            {
+                TaskId = taskDB.TaskId,
+                UserId = userId,
+                Status = TaskStatuses.New.ToString(),
+                Comment = "Task is created",
+                DateUpdate = DateTime.UtcNow,
+            };
+
+            _repositoryManager.TaskStatusLog.CreateTaskStatusLog(log);
+            _repositoryManager.Save();
+
             return _mapper.Map<TaskDTO>(taskDB);
         }
 
