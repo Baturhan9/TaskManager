@@ -64,6 +64,23 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
+        public void ChangeTaskStatus(int taskId, int userId, TaskStatuses status)
+        {
+            var task = TryGetTask(taskId, userId, trackChanges: false);
+
+            var log = new TaskStatusLogForManipulationDTO()
+            {
+                TaskId = task.TaskId,
+                UserId = userId,
+                Status = status.ToString(),
+                DateUpdate = DateTime.UtcNow,
+            };
+
+            var taskStatusLogDB = _mapper.Map<TaskStatusLog>(log);
+            _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
+            _repositoryManager.Save();
+        }
+
         public TaskDTO CreateTask(int userId, TaskForManipulationDTO task)
         {
             var user = _repositoryManager.User.GetUser(userId, trackChanges: false);
@@ -89,8 +106,9 @@ namespace TaskManager.Services
                 UserId = userId,
                 Status = TaskStatuses.New.ToString(),
                 Comment = "Task is created",
-                DateUpdate = DateTime.UtcNow
+                DateUpdate = DateTime.UtcNow,
             };
+
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(log);
             _repositoryManager.Save();
 

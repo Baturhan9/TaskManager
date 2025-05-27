@@ -92,5 +92,14 @@ namespace TaskManager.Api.Controllers
             _serviceManager.Task.AssignTaskToUser(id, userId, assignment.UserId, assignment.UserRole);
             return NoContent();
         }
+
+        [HttpPatch("{id}/status")]
+        [Authorize(Policy = UserRoles.Developer)]
+        public IActionResult AssignTask(int id, TaskStatuses status)
+        {
+            var userId = GetCurrentUserId();
+            _serviceManager.Task.ChangeTaskStatus(id, userId, status);
+            return NoContent();
+        }
     }
 }
