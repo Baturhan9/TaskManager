@@ -53,7 +53,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterDTO user) //TODO create normal registerDto
+        public IActionResult Register([FromBody] RegisterDTO user) 
         {
             string hashPassword = _passwordHelper.HashPassword(user.ConfirmPassword);
             var userDTO = new UserForManipulationDTO()

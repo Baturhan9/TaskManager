@@ -99,7 +99,6 @@ namespace TaskManager.Services
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
 
-            // todo : maybe use common method for creation logs like CreateLog(taskId, userId, Status, comment);
             var log = new TaskStatusLog()
             {
                 TaskId = taskDB.TaskId,
