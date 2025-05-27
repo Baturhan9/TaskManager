@@ -47,9 +47,16 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] UserForManipulationDTO user) //TODO create normal registerDto
+        public IActionResult Register([FromBody] RegisterDTO user) //TODO create normal registerDto
         {
-            _serviceManager.User.CreateUser(user);
+            var userDTO = new UserForManipulationDTO()
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Password = user.ConfirmPassword,
+                Role = UserRoles.Developer,
+            };
+            _serviceManager.User.CreateUser(userDTO);
             return CreatedAtAction(nameof(Register), user);
         }
 
