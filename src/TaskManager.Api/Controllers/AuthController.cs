@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using TaskManager.Api.Classes.Utilities;
 using TaskManager.Api.Models;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
@@ -18,6 +19,7 @@ namespace TaskManager.Api.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly IServiceManager _serviceManager;
         private readonly IConfiguration _configuration;
+        private readonly PasswordHelper _passwordHelper;
 
         public AuthController(
             ILogger<AuthController> logger,
@@ -28,16 +30,20 @@ namespace TaskManager.Api.Controllers
             _logger = logger;
             _serviceManager = serviceManager;
             _configuration = configuration;
+            _passwordHelper = new PasswordHelper();
         }
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO loginDto)
         {
-            var user = _serviceManager.User.GetUserByEmailAndPassword(
-                loginDto.Email,
-                loginDto.Password,
-                trackChanges: false
-            );
+            var user = _serviceManager.User.GetUserByEmail(loginDto.Email, trackChanges: false);
+
+            if (user is null)
+                return Unauthorized("Invalid login or password");
+
+            bool isPasswordValid = _passwordHelper.VerifyPassword(user.Password, loginDto.Password);
+            if (!isPasswordValid)
+                return Unauthorized("Invalid login or password");
 
             string encodedJwt = GenerateToken(user);
 
@@ -49,11 +55,12 @@ namespace TaskManager.Api.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterDTO user) //TODO create normal registerDto
         {
+            string hashPassword = _passwordHelper.HashPassword(user.ConfirmPassword);
             var userDTO = new UserForManipulationDTO()
             {
                 Username = user.Username,
                 Email = user.Email,
-                Password = user.ConfirmPassword,
+                Password = hashPassword,
                 Role = UserRoles.Developer,
             };
             _serviceManager.User.CreateUser(userDTO);

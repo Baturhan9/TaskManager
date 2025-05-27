@@ -11,6 +11,6 @@ namespace TaskManager.Interfaces.Services
         UserDTO CreateUser(UserForManipulationDTO user);
         void UpdateUser(int userId, UserForManipulationDTO user);
         void DeleteUser(int userId);
-        UserDTO GetUserByEmailAndPassword(string email, string password, bool trackChanges);
+        UserDTO GetUserByEmail(string email, bool trackChanges);
     }
 }

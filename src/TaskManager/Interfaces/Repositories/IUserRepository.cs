@@ -6,7 +6,7 @@ namespace TaskManager.Interfaces.Repositories
     {
         IEnumerable<User> GetUsers(bool trackChanges);
         User GetUser(int userId, bool trackChanges);
-        User GetUserByLoginAndPassword(string login, string password, bool trackChanges);
+        User GetUserByEmail(string login, bool trackChanges);
         void DeleteUser(User user);
         void CreateUser(User user);
     }

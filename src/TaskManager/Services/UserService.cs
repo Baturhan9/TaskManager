@@ -46,16 +46,9 @@ namespace TaskManager.Services
             return _mapper.Map<UserDTO>(user);
         }
 
-        public UserDTO GetUserByEmailAndPassword(string email, string password, bool trackChanges)
+        public UserDTO GetUserByEmail(string email, bool trackChanges)
         {
-            var user = _repositoryManager.User.GetUserByLoginAndPassword(
-                email,
-                password,
-                trackChanges
-            );
-            if (user is null)
-                throw new NotFoundUserException();
-
+            var user = _repositoryManager.User.GetUserByEmail(email, trackChanges);
             return _mapper.Map<UserDTO>(user);
         }
 

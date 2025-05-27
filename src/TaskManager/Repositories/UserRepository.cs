@@ -14,8 +14,8 @@ namespace TaskManager.Repositories
         public User GetUser(int userId, bool trackChanges) =>
             FindByCondition(u => u.UserId.Equals(userId), trackChanges).SingleOrDefault();
 
-        public User GetUserByLoginAndPassword(string login, string password, bool trackChanges) =>
-            FindByCondition(u => u.Email.Equals(login) && u.Password.Equals(password), trackChanges)
+        public User GetUserByEmail(string login, bool trackChanges) =>
+            FindByCondition(u => u.Email.Equals(login), trackChanges)
                 .SingleOrDefault();
 
         public void DeleteUser(User user) => Delete(user);
