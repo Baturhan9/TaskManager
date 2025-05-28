@@ -18,6 +18,6 @@ namespace TaskManager.Interfaces.Services
             int userId,
             AttachmentForManipulationDTO attachment
         );
-        void DeleteAttachment(int taskId, int attachmentId, int userId);
+        string DeleteAttachment(int taskId, int attachmentId, int userId);
     }
 }

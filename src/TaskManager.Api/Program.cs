@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using TaskManager.Api.Classes.Utilities;
 using TaskManager.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.ConfigureSwagger();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureDataBase(builder.Configuration);
 builder.Services.ConfigureAutoMapper();
+
+builder.Services.AddSingleton<FilesHandler>();
 
 var app = builder.Build();
 

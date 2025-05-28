@@ -7,5 +7,7 @@ namespace TaskManager.Consts
         public const string JWT_ISSUER = "JWT:ISSUER";
         public const string JWT_AUDIENCE = "JWT:AUDIENCE";
         public const string JWT_KEY = "JWT:KEY";
+
+        public const string STORAGE_PATH = "STORAGE_PATH";
     }
 }

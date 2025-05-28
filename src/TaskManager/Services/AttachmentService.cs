@@ -34,7 +34,7 @@ namespace TaskManager.Services
             return _mapper.Map<AttachmentDTO>(attachmentDB);
         }
 
-        public void DeleteAttachment(int taskId, int attachmentId, int userId)
+        public string DeleteAttachment(int taskId, int attachmentId, int userId)
         {
             CheckPermission(taskId, userId);
             var attachment = _repositoryManager.Attachment.GetAttachment(
@@ -47,6 +47,7 @@ namespace TaskManager.Services
 
             _repositoryManager.Attachment.DeleteAttachment(attachment);
             _repositoryManager.Save();
+            return attachment.FilePath;
         }
 
         public AttachmentDTO GetAttachment(int taskId, int attachmentId, int userId, bool trackChanges)
