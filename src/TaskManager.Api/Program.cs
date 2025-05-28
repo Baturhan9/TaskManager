@@ -22,6 +22,7 @@ builder.Services.ConfigureAutoMapper();
 
 var app = builder.Build();
 
+app.UseExceptionHandler(app.Services.GetRequiredService<ILogger<Program>>());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
