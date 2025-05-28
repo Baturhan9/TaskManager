@@ -67,6 +67,9 @@ namespace TaskManager.Services
         public void ChangeTaskStatus(int taskId, int userId, TaskStatuses status)
         {
             var task = TryGetTask(taskId, userId, trackChanges: false);
+            var lastStatus = _repositoryManager.TaskStatusLog.GetLastTaskStatusLog(taskId, trackChanges: false);
+            if (lastStatus.Status == status.ToString())
+                throw new BadRequestSameStatusTaskException(taskId, status.ToString());
 
             var log = new TaskStatusLogForManipulationDTO()
             {
