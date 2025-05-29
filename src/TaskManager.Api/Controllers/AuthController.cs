@@ -47,7 +47,7 @@ namespace TaskManager.Api.Controllers
 
             string encodedJwt = GenerateToken(user);
 
-            var response = new { userId = user.UserId, accessToken = encodedJwt };
+            var response = new { UserId = user.UserId, Token = encodedJwt };
 
             return Ok(response);
         }
