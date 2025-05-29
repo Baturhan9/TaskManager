@@ -37,6 +37,19 @@ namespace TaskManager.Api.Controllers
             return Ok(taskStatusLogs);
         }
 
+        [HttpGet("/lastStatus")]
+        [Authorize(Policy = UserRoles.Developer)]
+        public IActionResult GetLastTaskStatus(int taskId)
+        {
+            var userId = GetCurrentUserId();
+            var status = _serviceManager.TaskStatusLog.GetLastStatusLog(
+                taskId,
+                userId,
+                trackChanges: false
+            );
+            return Ok(status);
+        }
+
         [HttpGet("{id}")]
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetTaskStatusLog(int taskId, int id)

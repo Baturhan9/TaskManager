@@ -6,6 +6,7 @@ namespace TaskManager.Interfaces.Services
     public interface ITaskStatusLogService
     {
         IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(int taskId, int userId, bool trackChanges);
+        TaskStatusLogDTO GetLastStatusLog(int taskId, int userId, bool trackChanges);
         TaskStatusLogDTO GetTaskStatusLog(
             int taskId,
             int taskStatusLogId,

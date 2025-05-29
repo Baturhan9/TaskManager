@@ -49,7 +49,22 @@ namespace TaskManager.Services
             _repositoryManager.Save();
         }
 
-        public TaskStatusLogDTO GetTaskStatusLog(int taskId, int taskStatusLogId, int userId, bool trackChanges)
+        public TaskStatusLogDTO GetLastStatusLog(int taskId, int userId, bool trackChanges)
+        {
+            CheckPermission(taskId, userId);
+            var status = _repositoryManager.TaskStatusLog.GetLastTaskStatusLog(
+                taskId,
+                trackChanges
+            );
+            return _mapper.Map<TaskStatusLogDTO>(status);
+        }
+
+        public TaskStatusLogDTO GetTaskStatusLog(
+            int taskId,
+            int taskStatusLogId,
+            int userId,
+            bool trackChanges
+        )
         {
             CheckPermission(taskId, userId);
 
@@ -64,7 +79,11 @@ namespace TaskManager.Services
             return _mapper.Map<TaskStatusLogDTO>(taskStatusLog);
         }
 
-        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(int taskId, int userId, bool trackChanges)
+        public IEnumerable<TaskStatusLogDTO> GetTaskStatusLogs(
+            int taskId,
+            int userId,
+            bool trackChanges
+        )
         {
             CheckPermission(taskId, userId);
 
@@ -111,7 +130,6 @@ namespace TaskManager.Services
             );
             if (access is null)
                 throw new ProjectForbiddenException(task.ProjectId.Value);
-                
         }
     }
 }
