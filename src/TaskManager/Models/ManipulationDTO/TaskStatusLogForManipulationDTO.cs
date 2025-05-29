@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using TaskManager.Consts;
 
 namespace TaskManager.Models.ManipulationDTO
@@ -6,6 +7,9 @@ namespace TaskManager.Models.ManipulationDTO
     {
         public int? TaskId { get; init; }
         public int? UserId { get; init; }
+
+        [MinLength(3)]
+        [MaxLength(300)]
         public string? Comment { get; init; }
         public string Status { get; init; } = TaskStatuses.Empty.ToString();
         public DateTime? DateUpdate { get; init; } = DateTime.UtcNow;
