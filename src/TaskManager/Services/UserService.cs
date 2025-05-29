@@ -1,6 +1,7 @@
 using AutoMapper;
 using TaskManager.Exceptions;
 using TaskManager.Exceptions.ModelsExceptions.NotFoundExceptions;
+using TaskManager.Exceptions.RequestExceptions;
 using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
@@ -21,6 +22,10 @@ namespace TaskManager.Services
 
         public UserDTO CreateUser(UserForManipulationDTO user)
         {
+            var isExistUser = _repositoryManager.User.GetUserByEmail(user.Email, trackChanges: false) != null;
+            if (isExistUser)
+                throw new BadRequestSameEmailException(user.Email);
+
             var userDB = _mapper.Map<Models.User>(user);
             _repositoryManager.User.CreateUser(userDB);
             _repositoryManager.Save();
