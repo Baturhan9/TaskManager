@@ -15,7 +15,8 @@
         }
         else
         {
-            foreach (var task in Model)
+            <div class="content">
+            @foreach (var task in Model)
             {
                 <div class="task-card">
                     <div class="task-title">@task.Title</div>
@@ -29,6 +30,7 @@
                     </form>
                 </div>
             }
+            </div>
         }
     </div>
 </div>
