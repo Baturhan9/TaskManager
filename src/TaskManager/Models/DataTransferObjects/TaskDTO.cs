@@ -11,5 +11,6 @@ namespace TaskManager.Models.DataTransferObjects
         public int? TesterId { get; init; }
         public int? AssignmentId { get; init; }
         public int? ProjectId { get; init; }
+        public string? LastStatus { get; set; }
     }
 }

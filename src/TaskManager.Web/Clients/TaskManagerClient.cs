@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.Shared;
 using TaskManager.Web.Interfaces;
 using TaskManager.Web.Models.AuthModels;
@@ -111,4 +112,19 @@ public class TaskManagerClient : ITaskManagerClient
         };
     }
 
+    public async Task<ApiResponse<IEnumerable<TaskDTO>>> GetAllTasks()
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync("api/tasks");
+        var result = await HandleResponse<IEnumerable<TaskDTO>>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<TaskStatusLogDTO>> GetLastTaskStatus(int taskId)
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync($"api/tasks/{taskId}/logs/lastStatus");
+        var result = await HandleResponse<TaskStatusLogDTO>(response);
+        return result;
+    }
 }

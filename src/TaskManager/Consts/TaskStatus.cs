@@ -18,5 +18,6 @@ namespace TaskManager.Consts
         /// This is for comment and other changes in system.
         /// </summary>
         Empty,
+        UnKnown,
     }
 }

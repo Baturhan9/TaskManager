@@ -1,3 +1,4 @@
+using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.Shared;
 using TaskManager.Web.Models.AuthModels;
 using TaskManager.Web.Models.Common;
@@ -9,5 +10,8 @@ public interface ITaskManagerClient
     Task<ApiResponse<AuthResponse>> RegisterAsync(RegisterRequest request);
     Task<ApiResponse<AuthResponse>> LoginAsync(LoginRequest request);
     Task<ApiResponse<UserProfile>> GetCurrentUserAsync();
+    Task<ApiResponse<IEnumerable<TaskDTO>>> GetAllTasks();
+    Task<ApiResponse<TaskStatusLogDTO>> GetLastTaskStatus(int taskId);
+
     Task LogoutAsync();
 }

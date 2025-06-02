@@ -1,0 +1,44 @@
+@using TaskManager.Web.Models.Tasks
+@model IEnumerable<ListTasksViewModel>
+
+@{
+    ViewData["Title"] = "Список задач";
+}
+
+<div class="main-content">
+    <div class="container">
+        <h1>Мои задачи</h1>
+
+        @if (!Model.Any())
+        {
+            <p>Задачи отсутствуют.</p>
+        }
+        else
+        {
+            foreach (var task in Model)
+            {
+                <div class="task-card">
+                    <div class="task-title">@task.Title</div>
+                    <div class="task-meta">
+                        <span class="@(GetStatusClass(task.Status))">@task.Status</span>
+                        <span>Deadline: @task.Deadline.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <form asp-controller="Task" asp-action="Details" method="get">
+                        <input type="hidden" name="id" value="@task.TaskId" />
+                        <button class="btn" type="submit">Подробнее</button>
+                    </form>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(string status) => status switch
+    {
+        "New" => "status-new",
+        "InProgress" => "status-in-progress",
+        "Done" => "status-done",
+        _ => ""
+    };
+}

@@ -91,3 +91,47 @@
      width: 100%;
      max-width: 400px;
  }
+
+
+ .task-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+.task-meta {
+    display: flex;
+    gap: 15px;
+    color: #7f8c8d;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.status-new {
+    color: #e67e22;
+}
+.status-in-progress {
+    color: #3498db;
+}
+.status-done {
+    color: #2ecc71;
+}
+
+.btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
