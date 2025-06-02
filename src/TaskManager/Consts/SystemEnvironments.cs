@@ -9,5 +9,7 @@ namespace TaskManager.Consts
         public const string JWT_KEY = "JWT:KEY";
 
         public const string STORAGE_PATH = "STORAGE_PATH";
+
+        public const string TASK_MANAGER_URL = "TASK_MANAGER_URL";
     }
 }
