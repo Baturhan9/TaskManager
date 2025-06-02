@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using TaskManager.Web.Interfaces;
 using TaskManager.Web.Models.AuthModels;
 using TaskManager.Web.Models.Common;
+using TaskManager.Web.Models.UserModels;
 
 namespace TaskManager.Web.Clients;
 
@@ -77,5 +78,11 @@ public class TaskManagerClient : ITaskManagerClient
             Success = false,
             ErrorMessage = $"Error {(int)response.StatusCode}: {error}",
         };
+    }
+
+    public async Task<ApiResponse<UserProfile>> GetCurrentUserAsync()
+    {
+        SetAuthorizationHeader();
+        HandleResponse<UserProfile>(_httpClient.GetAsync("api/user/profile"));
     }
 }

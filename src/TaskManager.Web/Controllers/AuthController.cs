@@ -33,7 +33,7 @@ public class AuthController : Controller
             return View(request);
         }
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Login", "Auth");
     }
 
     [HttpGet]
@@ -56,7 +56,7 @@ public class AuthController : Controller
             return View(request);
         }
 
-        return RedirectToAction("Dashboard", "Home");
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpPost]
