@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Consts;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.ManipulationDTO;
+using TaskManager.Models.Shared;
 
 namespace TaskManager.Api.Controllers
 {
@@ -34,6 +35,20 @@ namespace TaskManager.Api.Controllers
         {
             var user = _serviceManager.User.GetUser(id, trackChanges: false);
             return Ok(user);
+        }
+        [HttpGet("{id}/profile")]
+        [Authorize(Policy = UserRoles.Developer)]
+        public IActionResult GetUserProfile(int id)
+        {
+            var user = _serviceManager.User.GetUser(id, trackChanges: false);
+            var profile = new UserProfile
+            {
+                Id = user.UserId.ToString(),
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role
+            };
+            return Ok(profile);
         }
 
         [HttpPost]

@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="~/TaskManager.Web.styles.css" asp-append-version="true" />
 
 </head>
+
 <body>
     @if (ViewData["HideSidebar"] as bool? != true)
     {
@@ -17,11 +19,13 @@
                 <h2>Меню</h2>
             </div>
             <ul class="sidebar-menu">
-                <li class="active">Профиль</li>
-                <li>Задачи</li>
-                <li>Проекты</li>
-                <li>Отчеты</li>
-                <li>Настройки</li>
+                <li>
+                    <a asp-action="Profile" asp-controller="User" class="nav-link">Профиль</a>
+                </li>
+                <li><a class="nav-link">Задачи</a></li>
+                <li><a class="nav-link">Проекты</a></li>
+                <li><a class="nav-link">Отчеты</a></li>
+                <li><a class="nav-link">Настройки</a></li>
             </ul>
         </div>
     }
@@ -31,7 +35,7 @@
         </main>
         <footer class="border-top footer text-muted mt-4">
             <div class="container">
-                &copy; 2025 - TaskManager.Web 
+                &copy; 2025 - TaskManager.Web
             </div>
         </footer>
     </div>
@@ -41,4 +45,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

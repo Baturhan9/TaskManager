@@ -60,9 +60,10 @@ public class AuthController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _client.LogoutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Login", "Auth");
     }
 }

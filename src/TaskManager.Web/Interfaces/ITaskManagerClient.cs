@@ -1,6 +1,6 @@
+using TaskManager.Models.Shared;
 using TaskManager.Web.Models.AuthModels;
 using TaskManager.Web.Models.Common;
-using TaskManager.Web.Models.UserModels;
 
 namespace TaskManager.Web.Interfaces;
 

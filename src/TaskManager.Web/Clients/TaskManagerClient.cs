@@ -1,8 +1,8 @@
 using System.Net.Http.Headers;
+using TaskManager.Models.Shared;
 using TaskManager.Web.Interfaces;
 using TaskManager.Web.Models.AuthModels;
 using TaskManager.Web.Models.Common;
-using TaskManager.Web.Models.UserModels;
 
 namespace TaskManager.Web.Clients;
 
@@ -29,6 +29,16 @@ public class TaskManagerClient : ITaskManagerClient
         }
     }
 
+    private string GetUserIdFromClaims()
+    {
+        var userIdClaim = _httpContextAccessor.HttpContext.Request.Cookies["user_id"];
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            throw new UnauthorizedAccessException("User ID claim is missing.");
+        }
+        return userIdClaim;
+    }
+
     public async Task<ApiResponse<AuthResponse>> LoginAsync(LoginRequest request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", request);
@@ -47,6 +57,17 @@ public class TaskManagerClient : ITaskManagerClient
                     Expires = DateTimeOffset.Now.AddDays(1),
                 }
             );
+            _httpContextAccessor.HttpContext.Response.Cookies.Append(
+                "user_id",
+                result.Data.UserId.ToString(),
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.Now.AddDays(1),
+                }
+            );
         }
 
         return result;
@@ -55,6 +76,7 @@ public class TaskManagerClient : ITaskManagerClient
     public Task LogoutAsync()
     {
         _httpContextAccessor.HttpContext.Response.Cookies.Delete("jwt_token");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete("user_id");
         return Task.CompletedTask;
     }
 
@@ -62,6 +84,15 @@ public class TaskManagerClient : ITaskManagerClient
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/register", request);
         return await HandleResponse<AuthResponse>(response);
+    }
+
+    public async Task<ApiResponse<UserProfile>> GetCurrentUserAsync()
+    {
+        SetAuthorizationHeader();
+        var userId = GetUserIdFromClaims();
+        var response = await _httpClient.GetAsync($"api/users/{userId}/profile");
+        var result = await HandleResponse<UserProfile>(response);
+        return result;
     }
 
     private async Task<ApiResponse<T>> HandleResponse<T>(HttpResponseMessage response)
@@ -80,9 +111,4 @@ public class TaskManagerClient : ITaskManagerClient
         };
     }
 
-    public async Task<ApiResponse<UserProfile>> GetCurrentUserAsync()
-    {
-        SetAuthorizationHeader();
-        HandleResponse<UserProfile>(_httpClient.GetAsync("api/user/profile"));
-    }
 }

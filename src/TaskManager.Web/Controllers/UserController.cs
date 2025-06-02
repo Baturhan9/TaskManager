@@ -6,6 +6,7 @@ namespace TaskManager.Web.Controllers;
 public class UserController : Controller
 {
     private readonly ITaskManagerClient _client;
+
     public UserController(ITaskManagerClient client)
     {
         _client = client;
@@ -14,11 +15,12 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Profile()
     {
-        var user = await _client.GetCurrentUserAsync();
-        if (user == null)
+        var response = await _client.GetCurrentUserAsync();
+        if (!response.Success)
         {
-            return RedirectToAction("Login", "Auth");
+            ModelState.AddModelError("", response.ErrorMessage);
+            return View();
         }
-        return View(user);
+        return View(response.Data);
     }
 }
