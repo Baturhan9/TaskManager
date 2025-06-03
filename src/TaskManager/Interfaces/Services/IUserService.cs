@@ -7,6 +7,7 @@ namespace TaskManager.Interfaces.Services
     public interface IUserService
     {
         IEnumerable<UserDTO> GetUsers(bool trackChanges);
+        Dictionary<int, string> GetUsersByIds(IEnumerable<int> ids, bool trackChanges);
         UserDTO GetUser(int userId, bool trackChanges);
         UserDTO CreateUser(UserForManipulationDTO user);
         void UpdateUser(int userId, UserForManipulationDTO user);

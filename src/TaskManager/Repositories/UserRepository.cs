@@ -21,5 +21,10 @@ namespace TaskManager.Repositories
         public void DeleteUser(User user) => Delete(user);
 
         public void CreateUser(User user) => Create(user);
+
+        public IEnumerable<User> GetUsersByIds(IEnumerable<int> ids, bool trackChanges) =>
+            FindByCondition(u => ids.Contains(u.UserId), trackChanges)
+                .OrderBy(u => u.UserId)
+                .ToList();
     }
 }

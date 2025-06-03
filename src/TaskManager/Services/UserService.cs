@@ -22,7 +22,8 @@ namespace TaskManager.Services
 
         public UserDTO CreateUser(UserForManipulationDTO user)
         {
-            var isExistUser = _repositoryManager.User.GetUserByEmail(user.Email, trackChanges: false) != null;
+            var isExistUser =
+                _repositoryManager.User.GetUserByEmail(user.Email, trackChanges: false) != null;
             if (isExistUser)
                 throw new BadRequestSameEmailException(user.Email);
 
@@ -61,6 +62,14 @@ namespace TaskManager.Services
         {
             var users = _repositoryManager.User.GetUsers(trackChanges);
             return _mapper.Map<IEnumerable<UserDTO>>(users);
+        }
+
+        public Dictionary<int, string> GetUsersByIds(IEnumerable<int> ids, bool trackChanges)
+        {
+            var users = _repositoryManager
+                .User.GetUsersByIds(ids, trackChanges)
+                .ToDictionary(u => u.UserId, u => u.Username);
+            return users;
         }
 
         public void UpdateUser(int userId, UserForManipulationDTO user)
