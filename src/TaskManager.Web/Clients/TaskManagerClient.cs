@@ -120,11 +120,58 @@ public class TaskManagerClient : ITaskManagerClient
         return result;
     }
 
-    public async Task<ApiResponse<TaskStatusLogDTO>> GetLastTaskStatus(int taskId)
+    public async Task<ApiResponse<TaskDTO>> GetTask(int taskId)
     {
         SetAuthorizationHeader();
-        var response = await _httpClient.GetAsync($"api/tasks/{taskId}/logs/lastStatus");
-        var result = await HandleResponse<TaskStatusLogDTO>(response);
+        var response = await _httpClient.GetAsync($"api/tasks/{taskId}");
+        var result = await HandleResponse<TaskDTO>(response);
         return result;
+    }
+
+    public async Task<ApiResponse<IEnumerable<TaskStatusLogDTO>>> GetTaskLogs(int taskId)
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync($"api/tasks/{taskId}/logs");
+        var result = await HandleResponse<IEnumerable<TaskStatusLogDTO>>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<IEnumerable<AttachmentDTO>>> GetTaskAttachments(int taskId)
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync($"api/tasks/{taskId}/attachments");
+        var result = await HandleResponse<IEnumerable<AttachmentDTO>>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<Dictionary<string, string>>> GetUsernamesByIds(
+        IEnumerable<int> ids
+    )
+    {
+        SetAuthorizationHeader();
+        var idsList = string.Join(",", ids);
+        var encodedIds = Uri.EscapeDataString(idsList);
+        var response = await _httpClient.GetAsync($"api/users/range?ids={encodedIds}");
+        var result = await HandleResponse<Dictionary<string, string>>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<Stream>> GetAttachmentFile(int taskId, int attachmentId)
+    {
+        SetAuthorizationHeader();
+        
+        var response = await _httpClient.GetAsync($"api/tasks/{taskId}/attachments/{attachmentId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            return new ApiResponse<Stream>
+            {
+                Success = false,
+                ErrorMessage = $"Error {(int)response.StatusCode}: {error}",
+            };
+        }
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        return new ApiResponse<Stream> { Success = true, Data = stream };
     }
 }

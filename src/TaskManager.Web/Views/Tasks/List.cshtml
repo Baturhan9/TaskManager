@@ -24,7 +24,7 @@
                         <span class="@(GetStatusClass(task.Status))">@task.Status</span>
                         <span>Deadline: @task.Deadline.ToString("dd.MM.yyyy")</span>
                     </div>
-                    <form asp-controller="Task" asp-action="Details" method="get">
+                    <form asp-controller="Tasks" asp-action="Details" method="get">
                         <input type="hidden" name="id" value="@task.TaskId" />
                         <button class="btn" type="submit">Подробнее</button>
                     </form>

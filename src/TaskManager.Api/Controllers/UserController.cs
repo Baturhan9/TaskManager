@@ -36,18 +36,29 @@ namespace TaskManager.Api.Controllers
             var user = _serviceManager.User.GetUser(id, trackChanges: false);
             return Ok(user);
         }
+
         [HttpGet("range")]
         [Authorize(Policy = UserRoles.Developer)]
         // get username by ids
-        public IActionResult GetUsernamesByIds ([FromQuery] IEnumerable<int> ids)
+        public IActionResult GetUsernamesByIds ([FromQuery] string ids)
         {
-            if (ids is null || !ids.Any())
+            if (ids is null)
             {
                 return BadRequest("Ids are null or empty");
             }
-            var users = _serviceManager.User.GetUsersByIds(ids, trackChanges: false);
+            List<int> idsArray;
+            try
+            {
+                idsArray = ids.Split(',').Select(int.Parse).ToList();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Invalid format for ids");
+            }
+            var users = _serviceManager.User.GetUsersByIds(idsArray, trackChanges: false);
             return Ok(users);
         }
+
         [HttpGet("{id}/profile")]
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetUserProfile(int id)
