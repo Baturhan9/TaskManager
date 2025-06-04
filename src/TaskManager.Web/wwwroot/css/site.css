@@ -1,0 +1,175 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    font-family: sans-serif;
+}
+
+
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 1rem;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    min-height: 100vh;
+}
+    
+
+ .sidebar-header {
+     padding: 0 20px 20px;
+     border-bottom: 1px solid #34495e;
+ }
+
+ .sidebar-menu {
+     list-style: none;
+     padding: 0;
+     margin: 0;
+ }
+
+.sidebar-menu li {
+    list-style: none;
+    margin: 10px 0;
+}
+
+ .sidebar-menu li:hover {
+     background-color: #3498db;
+     cursor: pointer;
+ }
+ .sidebar-menu a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+.sidebar-menu li a {
+    display: block;
+    padding: 8px 12px;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+ 
+
+.sidebar-menu li.active {
+    background-color: #2980b9;
+}
+.main-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+ .container {
+     max-width: 800px;
+     margin: 0 auto;
+ }
+
+ .btn {
+     background: #3498db;
+     color: white;
+     border: none;
+     padding: 6px 12px;
+     border-radius: 4px;
+     cursor: pointer;
+     font-size: 0.9em;
+ }
+
+ .auth-wrapper {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     background-color: #f5f5f5;
+ }
+
+ .auth-form-container {
+     background: white;
+     padding: 30px;
+     border-radius: 8px;
+     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+     width: 100%;
+     max-width: 400px;
+ }
+
+
+ .task-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.task-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+.task-meta {
+    display: flex;
+    gap: 15px;
+    color: #7f8c8d;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.status-new {
+    color: #e67e22;
+}
+.status-in-progress {
+    color: #3498db;
+}
+.status-done {
+    color: #2ecc71;
+}
+
+.btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+footer.footer {
+    background-color: #f8f9fa;
+    padding: 0.25rem 0;
+    text-align: center;
+    border-top: 1px solid #ccc;
+    width: 100%;
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}

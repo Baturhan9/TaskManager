@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TaskManager.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TaskManager.Web.styles.css" asp-append-version="true" />
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        @if (ViewData["HideSidebar"] as bool? != true)
+        {
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Меню</h2>
+                </div>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a asp-action="Profile" asp-controller="User" class="nav-link">Профиль</a>
+                    </li>
+                    <li><a asp-action="List" asp-controller="Tasks" class="nav-link">Задачи</a></li>
+                    <li><a class="nav-link">Проекты</a></li>
+                    <li><a class="nav-link">Отчеты</a></li>
+                    <li><a class="nav-link">Настройки</a></li>
+                </ul>
+            </div>
+
+        }
+        <div class="main-content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+<footer class="footer text-muted">
+    <div class="footer-container">
+        &copy; 2025 - TaskManager.Web
+    </div>
+</footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
