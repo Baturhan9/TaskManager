@@ -67,7 +67,10 @@ namespace TaskManager.Services
         public void ChangeTaskStatus(int taskId, int userId, TaskStatuses status)
         {
             var task = TryGetTask(taskId, userId, trackChanges: false);
-            var lastStatus = _repositoryManager.TaskStatusLog.GetLastTaskStatusLog(taskId, trackChanges: false);
+            var lastStatus = _repositoryManager.TaskStatusLog.GetLastTaskStatusLog(
+                taskId,
+                trackChanges: false
+            );
             if (lastStatus.Status == status.ToString())
                 throw new BadRequestSameStatusTaskException(taskId, status.ToString());
 
@@ -114,6 +117,8 @@ namespace TaskManager.Services
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(log);
             _repositoryManager.Save();
 
+            var taskDto = _mapper.Map<TaskDTO>(taskDB);
+            taskDto.LastStatus = TaskStatuses.New.ToString();
             return _mapper.Map<TaskDTO>(taskDB);
         }
 
@@ -127,7 +132,7 @@ namespace TaskManager.Services
         public TaskDTO GetTask(int taskId, int userId, bool trackChanges)
         {
             var task = TryGetTask(taskId, userId, trackChanges);
-            return _mapper.Map<TaskDTO>(task);
+            return GetTaskWithLastStatus(_mapper.Map<TaskDTO>(task));
         }
 
         public IEnumerable<TaskDTO> GetTasks(int userId, bool trackChanges)
@@ -143,7 +148,7 @@ namespace TaskManager.Services
             var tasks = _repositoryManager
                 .Task.GetTasks(trackChanges)
                 .Where(t => accessesProjectIds.Contains(t.ProjectId));
-            return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
+            return GetTasksWithLastStatus(_mapper.Map<IEnumerable<TaskDTO>>(tasks));
         }
 
         public IEnumerable<TaskDTO> GetTasksByProjectId(
@@ -169,7 +174,7 @@ namespace TaskManager.Services
                 throw new ProjectForbiddenException(projectId);
 
             var tasks = _repositoryManager.Task.GetTasksByProjectId(projectId, trackChanges);
-            return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
+            return GetTasksWithLastStatus(_mapper.Map<IEnumerable<TaskDTO>>(tasks));
         }
 
         public IEnumerable<TaskDTO> GetTasksByUserRole(
@@ -195,7 +200,7 @@ namespace TaskManager.Services
 
             tasks = tasks.Where(t => operation.Retrieve(t) == userId);
 
-            return _mapper.Map<IEnumerable<TaskDTO>>(tasks);
+            return GetTasksWithLastStatus(_mapper.Map<IEnumerable<TaskDTO>>(tasks));
         }
 
         public void UpdateTask(int taskId, int userId, TaskForManipulationDTO task)
@@ -204,7 +209,7 @@ namespace TaskManager.Services
             _mapper.Map(task, taskDB);
             _repositoryManager.Save();
         }
-        
+
         private Models.Task TryGetTask(int taskId, int userId, bool trackChanges)
         {
             var task = _repositoryManager.Task.GetTask(taskId, trackChanges);
@@ -221,6 +226,30 @@ namespace TaskManager.Services
             if (access is null)
                 throw new ProjectForbiddenException(task.ProjectId.Value);
             return task;
+        }
+
+        private IEnumerable<TaskDTO> GetTasksWithLastStatus(IEnumerable<TaskDTO> tasks)
+        {
+            foreach (var taskDto in tasks)
+            {
+                yield return GetTaskWithLastStatus(taskDto);
+            }
+        }
+
+        private TaskDTO GetTaskWithLastStatus(TaskDTO taskDto)
+        {
+            var log = _repositoryManager.TaskStatusLog.GetLastTaskStatusLog(
+                taskDto.TaskId,
+                trackChanges: false
+            );
+
+            string? lastStatus = log?.Status;
+            if (lastStatus is not null)
+            {
+                taskDto.LastStatus = lastStatus;
+            }
+
+            return taskDto;
         }
     }
 }

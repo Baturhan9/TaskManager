@@ -12,33 +12,38 @@
 </head>
 
 <body>
-    @if (ViewData["HideSidebar"] as bool? != true)
-    {
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>Меню</h2>
+
+    <div class="wrapper">
+        @if (ViewData["HideSidebar"] as bool? != true)
+        {
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Меню</h2>
+                </div>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a asp-action="Profile" asp-controller="User" class="nav-link">Профиль</a>
+                    </li>
+                    <li><a asp-action="List" asp-controller="Tasks" class="nav-link">Задачи</a></li>
+                    <li><a class="nav-link">Проекты</a></li>
+                    <li><a class="nav-link">Отчеты</a></li>
+                    <li><a class="nav-link">Настройки</a></li>
+                </ul>
             </div>
-            <ul class="sidebar-menu">
-                <li>
-                    <a asp-action="Profile" asp-controller="User" class="nav-link">Профиль</a>
-                </li>
-                <li><a class="nav-link">Задачи</a></li>
-                <li><a class="nav-link">Проекты</a></li>
-                <li><a class="nav-link">Отчеты</a></li>
-                <li><a class="nav-link">Настройки</a></li>
-            </ul>
+
+        }
+        <div class="main-content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    }
-    <div class="main-content">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-        <footer class="border-top footer text-muted mt-4">
-            <div class="container">
-                &copy; 2025 - TaskManager.Web
-            </div>
-        </footer>
     </div>
+
+<footer class="footer text-muted">
+    <div class="footer-container">
+        &copy; 2025 - TaskManager.Web
+    </div>
+</footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

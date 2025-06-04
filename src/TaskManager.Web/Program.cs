@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddTaskManagerClient(builder.Configuration);
 
+builder.Services.AddAutoMapperProfiles();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

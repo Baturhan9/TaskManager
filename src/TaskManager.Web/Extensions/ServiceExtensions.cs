@@ -12,8 +12,14 @@ public static class ServiceExtensions
         if (url == string.Empty)
             throw new Exception($"{SystemEnvironments.TASK_MANAGER_URL} must not be empty");
 
-        services.AddHttpClient<ITaskManagerClient,TaskManagerClient>(client => client.BaseAddress = new Uri(url));
+        services.AddHttpClient<ITaskManagerClient, TaskManagerClient>(client => client.BaseAddress = new Uri(url));
         services.AddHttpContextAccessor();
+        return services;
+    }
+
+    public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(Program));
         return services;
     }
 }

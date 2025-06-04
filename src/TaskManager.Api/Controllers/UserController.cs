@@ -36,6 +36,16 @@ namespace TaskManager.Api.Controllers
             var user = _serviceManager.User.GetUser(id, trackChanges: false);
             return Ok(user);
         }
+
+        [HttpGet("all")]
+        [Authorize(Policy = UserRoles.Developer)]
+        // get username by ids
+        public IActionResult GetUserDto ()
+        {
+            var users = _serviceManager.User.GetUsersDto(trackChanges: false);
+            return Ok(users);
+        }
+
         [HttpGet("{id}/profile")]
         [Authorize(Policy = UserRoles.Developer)]
         public IActionResult GetUserProfile(int id)

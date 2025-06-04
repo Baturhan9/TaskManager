@@ -6,6 +6,7 @@ using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.ManipulationDTO;
+using TaskManager.Models.Shared;
 
 namespace TaskManager.Services
 {
@@ -22,7 +23,8 @@ namespace TaskManager.Services
 
         public UserDTO CreateUser(UserForManipulationDTO user)
         {
-            var isExistUser = _repositoryManager.User.GetUserByEmail(user.Email, trackChanges: false) != null;
+            var isExistUser =
+                _repositoryManager.User.GetUserByEmail(user.Email, trackChanges: false) != null;
             if (isExistUser)
                 throw new BadRequestSameEmailException(user.Email);
 
@@ -61,6 +63,23 @@ namespace TaskManager.Services
         {
             var users = _repositoryManager.User.GetUsers(trackChanges);
             return _mapper.Map<IEnumerable<UserDTO>>(users);
+        }
+
+        public Dictionary<int, UserListDto> GetUsersDto(bool trackChanges)
+        {
+            var users = _repositoryManager
+                .User.GetUsers(trackChanges)
+                .ToDictionary(
+                    x => x.UserId,
+                    x => new UserListDto
+                    {
+                        Id = x.UserId,
+                        Username = x.Username,
+                        Role = x.Role,
+                    }
+                );
+
+            return users;
         }
 
         public void UpdateUser(int userId, UserForManipulationDTO user)
