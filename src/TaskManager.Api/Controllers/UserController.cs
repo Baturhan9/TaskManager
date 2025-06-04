@@ -37,25 +37,12 @@ namespace TaskManager.Api.Controllers
             return Ok(user);
         }
 
-        [HttpGet("range")]
+        [HttpGet("all")]
         [Authorize(Policy = UserRoles.Developer)]
         // get username by ids
-        public IActionResult GetUsernamesByIds ([FromQuery] string ids)
+        public IActionResult GetUserDto ()
         {
-            if (ids is null)
-            {
-                return BadRequest("Ids are null or empty");
-            }
-            List<int> idsArray;
-            try
-            {
-                idsArray = ids.Split(',').Select(int.Parse).ToList();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Invalid format for ids");
-            }
-            var users = _serviceManager.User.GetUsersByIds(idsArray, trackChanges: false);
+            var users = _serviceManager.User.GetUsersDto(trackChanges: false);
             return Ok(users);
         }
 

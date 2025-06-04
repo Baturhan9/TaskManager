@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 using TaskManager.Models.Shared;
 using TaskManager.Web.Interfaces;
 using TaskManager.Web.Models.AuthModels;
@@ -143,23 +144,10 @@ public class TaskManagerClient : ITaskManagerClient
         var result = await HandleResponse<IEnumerable<AttachmentDTO>>(response);
         return result;
     }
-
-    public async Task<ApiResponse<Dictionary<string, string>>> GetUsernamesByIds(
-        IEnumerable<int> ids
-    )
-    {
-        SetAuthorizationHeader();
-        var idsList = string.Join(",", ids);
-        var encodedIds = Uri.EscapeDataString(idsList);
-        var response = await _httpClient.GetAsync($"api/users/range?ids={encodedIds}");
-        var result = await HandleResponse<Dictionary<string, string>>(response);
-        return result;
-    }
-
     public async Task<ApiResponse<Stream>> GetAttachmentFile(int taskId, int attachmentId)
     {
         SetAuthorizationHeader();
-        
+
         var response = await _httpClient.GetAsync($"api/tasks/{taskId}/attachments/{attachmentId}");
         if (!response.IsSuccessStatusCode)
         {
@@ -173,5 +161,29 @@ public class TaskManagerClient : ITaskManagerClient
         var stream = await response.Content.ReadAsStreamAsync();
 
         return new ApiResponse<Stream> { Success = true, Data = stream };
+    }
+
+    public async Task<ApiResponse<TaskDTO>> CreateTaskAsync(TaskForManipulationDTO dto)
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.PostAsJsonAsync($"api/tasks", dto);
+        var result = await HandleResponse<TaskDTO>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<Dictionary<string, UserListDto>>> GetUsersDto()
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync("api/users/all");
+        var result = await HandleResponse<Dictionary<string, UserListDto>>(response);
+        return result;
+    }
+
+    public async Task<ApiResponse<IEnumerable<ProjectDTO>>> GetProjects()
+    {
+        SetAuthorizationHeader();
+        var response = await _httpClient.GetAsync("api/projects");
+        var result = await HandleResponse<IEnumerable<ProjectDTO>>(response);
+        return result;
     }
 }

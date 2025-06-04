@@ -6,6 +6,7 @@ using TaskManager.Interfaces.Repositories;
 using TaskManager.Interfaces.Services;
 using TaskManager.Models.DataTransferObjects;
 using TaskManager.Models.ManipulationDTO;
+using TaskManager.Models.Shared;
 
 namespace TaskManager.Services
 {
@@ -64,11 +65,20 @@ namespace TaskManager.Services
             return _mapper.Map<IEnumerable<UserDTO>>(users);
         }
 
-        public Dictionary<int, string> GetUsersByIds(IEnumerable<int> ids, bool trackChanges)
+        public Dictionary<int, UserListDto> GetUsersDto(bool trackChanges)
         {
             var users = _repositoryManager
-                .User.GetUsersByIds(ids, trackChanges)
-                .ToDictionary(u => u.UserId, u => u.Username);
+                .User.GetUsers(trackChanges)
+                .ToDictionary(
+                    x => x.UserId,
+                    x => new UserListDto
+                    {
+                        Id = x.UserId,
+                        Username = x.Username,
+                        Role = x.Role,
+                    }
+                );
+
             return users;
         }
 

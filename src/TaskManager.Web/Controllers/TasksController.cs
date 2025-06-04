@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Models.DataTransferObjects;
+using TaskManager.Models.ManipulationDTO;
 using TaskManager.Web.Interfaces;
 using TaskManager.Web.Models.Tasks;
 
@@ -27,7 +28,26 @@ public class TasksController : Controller
         }
         var listTasksViewModel = _mapper.Map<IEnumerable<ListTasksViewModel>>(response.Data);
 
-        return View(listTasksViewModel);
+        var users = await _taskManagerClient.GetUsersDto();
+        if (!users.Success)
+        {
+            return View("Error", users.ErrorMessage);
+        }
+
+        var project = await _taskManagerClient.GetProjects();
+        if (!project.Success)
+        {
+            return View("Error", project.ErrorMessage);
+        }
+
+        var viewModel = new ListTaskPageViewModel
+        {
+            Tasks = listTasksViewModel,
+            Users = users.Data,
+            Projects = project.Data,
+        };
+
+        return View(viewModel);
     }
 
     [HttpGet]
@@ -50,8 +70,7 @@ public class TasksController : Controller
         {
             attachments.Data = new List<AttachmentDTO>();
         }
-        var ids = await GetAllIdsInTaskDetails(task.Data, logs.Data);
-        var usernames = await _taskManagerClient.GetUsernamesByIds(ids);
+        var usernames = await _taskManagerClient.GetUsersDto();
         if (!usernames.Success)
         {
             return View("Error", usernames.ErrorMessage);
@@ -62,23 +81,19 @@ public class TasksController : Controller
             Task = task.Data,
             Logs = logs.Data,
             Attachments = attachments.Data,
-            Usernames = usernames.Data,
+            Usernames = usernames.Data.ToDictionary(user => user.Key, user => user.Value.Username),
         };
 
         return View(taskDetailsViewModel);
     }
 
-
-    private async Task<List<int>> GetAllIdsInTaskDetails(TaskDTO task, IEnumerable<TaskStatusLogDTO> logs)
+    [HttpPost]
+    public async Task<IActionResult> Create(TaskForManipulationDTO dto)
     {
-        var ids = new List<int>
-        {
-            task.AssignmentId ?? 0,
-            task.AuthorId ?? 0,
-            task.ReviewerId ?? 0,
-            task.TesterId ?? 0
-        };
-        ids.AddRange(logs.Select(log => log.UserId ?? 0));
-        return ids.Distinct().ToList();
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        await _taskManagerClient.CreateTaskAsync(dto);
+        return RedirectToAction("List");
     }
 }
