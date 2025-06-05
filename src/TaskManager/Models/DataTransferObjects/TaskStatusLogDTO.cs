@@ -7,6 +7,6 @@ namespace TaskManager.Models.DataTransferObjects
         public int? UserId { get; init; }
         public string? Comment { get; init; }
         public string Status { get; init; } = string.Empty;
-        public DateTime? DateUpdate { get; init; }
+        public DateTimeOffset? DateUpdate { get; init; }
     }
 }

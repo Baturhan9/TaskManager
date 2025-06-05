@@ -12,6 +12,6 @@ namespace TaskManager.Models.ManipulationDTO
         [MaxLength(300)]
         public string? Comment { get; init; }
         public string Status { get; init; } = TaskStatuses.Empty.ToString();
-        public DateTime? DateUpdate { get; init; } = DateTime.UtcNow;
+        public DateTimeOffset? DateUpdate { get; init; } = DateTime.UtcNow;
     }
 }

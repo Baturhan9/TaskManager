@@ -16,6 +16,6 @@ namespace TaskManager.Models.ManipulationDTO
         [MaxLength(3000)]
         [Required]
         public string? Description { get; init; }
-        public DateTime DateOfCreate { get; init; } = DateTime.UtcNow;
+        public DateTimeOffset DateOfCreate { get; init; } = DateTime.UtcNow;
     }
 }

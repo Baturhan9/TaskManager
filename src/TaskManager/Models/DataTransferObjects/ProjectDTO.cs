@@ -6,6 +6,6 @@ namespace TaskManager.Models.DataTransferObjects
         public string ShortName { get; init; } = string.Empty;
         public string FullName { get; init; } = string.Empty;
         public string? Description { get; init; }
-        public DateTime DateOfCreate { get; init; } = DateTime.UtcNow;
+        public DateTimeOffset DateOfCreate { get; init; } = DateTime.UtcNow;
     }
 }
