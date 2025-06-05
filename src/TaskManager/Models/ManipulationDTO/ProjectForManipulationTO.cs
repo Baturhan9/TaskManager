@@ -7,15 +7,15 @@ namespace TaskManager.Models.ManipulationDTO
         [MinLength(3)]
         [MaxLength(255)]
         [Required]
-        public string ShortName { get; init; } = string.Empty;
+        public string ShortName { get; set; } = string.Empty;
         [MinLength(3)]
         [MaxLength(255)]
         [Required]
-        public string FullName { get; init; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
         [MinLength(3)]
         [MaxLength(3000)]
         [Required]
-        public string? Description { get; init; }
-        public DateTimeOffset DateOfCreate { get; init; } = DateTime.UtcNow;
+        public string? Description { get; set; }
+        public DateTime? DateOfCreate { get; set; } = DateTime.UtcNow;
     }
 }

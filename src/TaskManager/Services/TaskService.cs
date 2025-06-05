@@ -101,6 +101,14 @@ namespace TaskManager.Services
             if (access is null)
                 throw new ProjectForbiddenException(task.ProjectId.Value);
 
+            if (task.DeadLine.HasValue)
+            {
+                task.DeadLine = DateTime.SpecifyKind(
+                    task.DeadLine.Value,
+                    DateTimeKind.Utc
+                );
+            }
+
             var taskDB = _mapper.Map<Models.Task>(task);
             _repositoryManager.Task.CreateTask(taskDB);
             _repositoryManager.Save();
