@@ -5,7 +5,7 @@ namespace TaskManager.Models.DataTransferObjects
         public int TaskId { get; init; }
         public string Title { get; init; } = string.Empty;
         public string? Description { get; init; }
-        public DateTime? Deadline { get; init; }
+        public DateTime? Deadline { get; init; } = DateTime.UtcNow;
         public int? AuthorId { get; init; }
         public int? ReviewerId { get; init; }
         public int? TesterId { get; init; }

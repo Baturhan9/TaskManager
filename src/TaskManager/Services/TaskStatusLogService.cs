@@ -27,6 +27,13 @@ namespace TaskManager.Services
         )
         {
             CheckPermission(taskId, userId);
+            if (taskStatusLog.DateUpdate.HasValue)
+            {
+                taskStatusLog.DateUpdate = DateTime.SpecifyKind(
+                    taskStatusLog.DateUpdate.Value,
+                    DateTimeKind.Utc
+                );
+            }
             var taskStatusLogDB = _mapper.Map<TaskStatusLog>(taskStatusLog);
             _repositoryManager.TaskStatusLog.CreateTaskStatusLog(taskStatusLogDB);
             _repositoryManager.Save();

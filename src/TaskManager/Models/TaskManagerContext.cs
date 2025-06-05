@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace TaskManager.Models;
 
 public partial class TaskManagerContext : DbContext
 {
-    public TaskManagerContext()
-    {
-    }
+    public TaskManagerContext() { }
 
     public TaskManagerContext(DbContextOptions<TaskManagerContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Attachment> Attachments { get; set; }
 
@@ -29,10 +26,31 @@ public partial class TaskManagerContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=TaskManager;Username=postgres;Password=1qaz!QAZ");
+        =>
+        optionsBuilder.UseNpgsql(
+            "Host=localhost;Port=5432;Database=TaskManager;Username=postgres;Password=1qaz!QAZ"
+        );
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime))
+                {
+                    property.SetValueConverter(
+                        new ValueConverter<DateTime, DateTime>(
+                            v =>
+                                v.Kind == DateTimeKind.Utc
+                                    ? v
+                                    : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+                            v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                        )
+                    );
+                }
+            }
+        }
         modelBuilder.Entity<Attachment>(entity =>
         {
             entity.HasKey(e => e.AttachmentId).HasName("attachments_pkey");
@@ -42,12 +60,12 @@ public partial class TaskManagerContext : DbContext
             entity.HasIndex(e => e.TaskId, "idx_attachments_task_id");
 
             entity.Property(e => e.AttachmentId).HasColumnName("attachment_id");
-            entity.Property(e => e.FilePath)
-                .HasMaxLength(255)
-                .HasColumnName("file_path");
+            entity.Property(e => e.FilePath).HasMaxLength(255).HasColumnName("file_path");
             entity.Property(e => e.TaskId).HasColumnName("task_id");
 
-            entity.HasOne(d => d.Task).WithMany(p => p.Attachments)
+            entity
+                .HasOne(d => d.Task)
+                .WithMany(p => p.Attachments)
                 .HasForeignKey(d => d.TaskId)
                 .HasConstraintName("attachments_task_id_fkey");
         });
@@ -59,16 +77,13 @@ public partial class TaskManagerContext : DbContext
             entity.ToTable("projects");
 
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
-            entity.Property(e => e.DateOfCreate)
+            entity
+                .Property(e => e.DateOfCreate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("date_of_create");
             entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.FullName)
-                .HasMaxLength(100)
-                .HasColumnName("full_name");
-            entity.Property(e => e.ShortName)
-                .HasMaxLength(50)
-                .HasColumnName("short_name");
+            entity.Property(e => e.FullName).HasMaxLength(100).HasColumnName("full_name");
+            entity.Property(e => e.ShortName).HasMaxLength(50).HasColumnName("short_name");
         });
 
         modelBuilder.Entity<Task>(entity =>
@@ -87,27 +102,35 @@ public partial class TaskManagerContext : DbContext
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.ReviewerId).HasColumnName("reviewer_id");
             entity.Property(e => e.TesterId).HasColumnName("tester_id");
-            entity.Property(e => e.Title)
-                .HasMaxLength(100)
-                .HasColumnName("title");
+            entity.Property(e => e.Title).HasMaxLength(100).HasColumnName("title");
 
-            entity.HasOne(d => d.Assignment).WithMany(p => p.TaskAssignments)
+            entity
+                .HasOne(d => d.Assignment)
+                .WithMany(p => p.TaskAssignments)
                 .HasForeignKey(d => d.AssignmentId)
                 .HasConstraintName("tasks_assignment_id_fkey");
 
-            entity.HasOne(d => d.Author).WithMany(p => p.TaskAuthors)
+            entity
+                .HasOne(d => d.Author)
+                .WithMany(p => p.TaskAuthors)
                 .HasForeignKey(d => d.AuthorId)
                 .HasConstraintName("tasks_author_id_fkey");
 
-            entity.HasOne(d => d.Project).WithMany(p => p.Tasks)
+            entity
+                .HasOne(d => d.Project)
+                .WithMany(p => p.Tasks)
                 .HasForeignKey(d => d.ProjectId)
                 .HasConstraintName("tasks_project_id_fkey");
 
-            entity.HasOne(d => d.Reviewer).WithMany(p => p.TaskReviewers)
+            entity
+                .HasOne(d => d.Reviewer)
+                .WithMany(p => p.TaskReviewers)
                 .HasForeignKey(d => d.ReviewerId)
                 .HasConstraintName("tasks_reviewer_id_fkey");
 
-            entity.HasOne(d => d.Tester).WithMany(p => p.TaskTesters)
+            entity
+                .HasOne(d => d.Tester)
+                .WithMany(p => p.TaskTesters)
                 .HasForeignKey(d => d.TesterId)
                 .HasConstraintName("tasks_tester_id_fkey");
         });
@@ -122,20 +145,23 @@ public partial class TaskManagerContext : DbContext
 
             entity.Property(e => e.TaskStatusId).HasColumnName("task_status_id");
             entity.Property(e => e.Comment).HasColumnName("comment");
-            entity.Property(e => e.DateUpdate)
+            entity
+                .Property(e => e.DateUpdate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnName("date_update");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .HasColumnName("status");
+            entity.Property(e => e.Status).HasMaxLength(50).HasColumnName("status");
             entity.Property(e => e.TaskId).HasColumnName("task_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Task).WithMany(p => p.TaskStatusLogs)
+            entity
+                .HasOne(d => d.Task)
+                .WithMany(p => p.TaskStatusLogs)
                 .HasForeignKey(d => d.TaskId)
                 .HasConstraintName("taskstatuslog_task_id_fkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.TaskStatusLogs)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.TaskStatusLogs)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("taskstatuslog_user_id_fkey");
         });
@@ -149,18 +175,10 @@ public partial class TaskManagerContext : DbContext
             entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
 
             entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.Password)
-                .HasMaxLength(255)
-                .HasColumnName("password");
-            entity.Property(e => e.Role)
-                .HasMaxLength(50)
-                .HasColumnName("role");
-            entity.Property(e => e.Username)
-                .HasMaxLength(50)
-                .HasColumnName("username");
+            entity.Property(e => e.Email).HasMaxLength(100).HasColumnName("email");
+            entity.Property(e => e.Password).HasMaxLength(255).HasColumnName("password");
+            entity.Property(e => e.Role).HasMaxLength(50).HasColumnName("role");
+            entity.Property(e => e.Username).HasMaxLength(50).HasColumnName("username");
         });
 
         modelBuilder.Entity<UserAccess>(entity =>
@@ -179,11 +197,15 @@ public partial class TaskManagerContext : DbContext
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Project).WithMany(p => p.UserAccesses)
+            entity
+                .HasOne(d => d.Project)
+                .WithMany(p => p.UserAccesses)
                 .HasForeignKey(d => d.ProjectId)
                 .HasConstraintName("useraccesses_project_id_fkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.UserAccesses)
+            entity
+                .HasOne(d => d.User)
+                .WithMany(p => p.UserAccesses)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("useraccesses_user_id_fkey");
         });

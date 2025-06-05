@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TaskManager.Models;
@@ -11,9 +12,11 @@ using TaskManager.Models;
 namespace TaskManager.Migrations
 {
     [DbContext(typeof(TaskManagerContext))]
-    partial class TaskManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20250605142251_ChangeTimestampToWithoutTimeZone")]
+    partial class ChangeTimestampToWithoutTimeZone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +61,7 @@ namespace TaskManager.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProjectId"));
 
-                    b.Property<DateTime?>("DateOfCreate")
+                    b.Property<DateTimeOffset?>("DateOfCreate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_of_create")
@@ -103,7 +106,7 @@ namespace TaskManager.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("author_id");
 
-                    b.Property<DateTime?>("Deadline")
+                    b.Property<DateTimeOffset?>("Deadline")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deadline");
 
@@ -158,7 +161,7 @@ namespace TaskManager.Migrations
                         .HasColumnType("text")
                         .HasColumnName("comment");
 
-                    b.Property<DateTime?>("DateUpdate")
+                    b.Property<DateTimeOffset?>("DateUpdate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_update")

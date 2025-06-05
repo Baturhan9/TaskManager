@@ -11,7 +11,7 @@ public partial class Task
 
     public string? Description { get; set; }
 
-    public DateTime? Deadline { get; set; }
+    public DateTime? Deadline { get; set; } = DateTime.UtcNow;
 
     public int? AuthorId { get; set; }
 

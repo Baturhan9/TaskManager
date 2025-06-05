@@ -2,7 +2,7 @@ namespace TaskManager.Models.ManipulationDTO
 {
     public class UserAccessForManipulationDTO
     {
-        public int? UserId { get; init; }
-        public int? ProjectId { get; init; }
+        public int? UserId { get; set; }
+        public int? ProjectId { get; set; }
     }
 }

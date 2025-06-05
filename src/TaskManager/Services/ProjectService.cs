@@ -26,6 +26,14 @@ namespace TaskManager.Services
             if (user is null)
                 throw new NotFoundUserException(userId);
 
+            if (project.DateOfCreate.HasValue)
+            {
+                project.DateOfCreate = DateTime.SpecifyKind(
+                    project.DateOfCreate.Value,
+                    DateTimeKind.Utc
+                );
+            }
+
             var projectDB = _mapper.Map<Project>(project);
             _repositoryManager.Project.CreateProject(projectDB);
             _repositoryManager.Save();

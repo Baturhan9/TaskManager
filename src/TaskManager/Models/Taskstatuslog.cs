@@ -15,7 +15,7 @@ public partial class TaskStatusLog
 
     public string Status { get; set; } = null!;
 
-    public DateTime? DateUpdate { get; set; }
+    public DateTime? DateUpdate { get; set; } = DateTime.UtcNow;
 
     public virtual Task? Task { get; set; }
 

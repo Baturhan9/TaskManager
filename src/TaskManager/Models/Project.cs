@@ -13,7 +13,7 @@ public partial class Project
 
     public string? Description { get; set; }
 
-    public DateTime? DateOfCreate { get; set; }
+    public DateTime? DateOfCreate { get; set; } = DateTime.UtcNow;
 
     public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
 

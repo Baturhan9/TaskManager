@@ -5,13 +5,13 @@ namespace TaskManager.Models.ManipulationDTO
 {
     public class TaskStatusLogForManipulationDTO
     {
-        public int? TaskId { get; init; }
-        public int? UserId { get; init; }
+        public int? TaskId { get; set; }
+        public int? UserId { get; set; }
 
         [MinLength(3)]
         [MaxLength(300)]
-        public string? Comment { get; init; }
-        public string Status { get; init; } = TaskStatuses.Empty.ToString();
-        public DateTime? DateUpdate { get; init; } = DateTime.UtcNow;
+        public string? Comment { get; set; }
+        public string Status { get; set; } = TaskStatuses.Empty.ToString();
+        public DateTime? DateUpdate { get; set; } = DateTime.UtcNow;
     }
 }

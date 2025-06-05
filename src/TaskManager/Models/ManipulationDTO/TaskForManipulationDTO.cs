@@ -8,16 +8,19 @@ namespace TaskManager.Models.ManipulationDTO
         [Required]
         [MinLength(3)]
         [MaxLength(255)]
-        public required string Title { get; init; }
+        public required string Title { get; set; }
         [Required]
         [MinLength(3)]
         [MaxLength(255)]
-        public string? Description { get; init; }
-        public DateTime? DeadLine { get; init; }
-        public int? AuthorId { get; init; }
-        public int? ReviewerId { get; init; }
-        public int? TesterId { get; init; }
-        public int? AssignmentId { get; init; }
-        public int? ProjectId { get; init; }
+        public string? Description { get; set; }
+        [Required]
+        public DateTime? DeadLine { get; set; } = DateTime.UtcNow;
+        [Required]
+        public int? AuthorId { get; set; }
+        public int? ReviewerId { get; set; }
+        public int? TesterId { get; set; }
+        public int? AssignmentId { get; set; }
+        [Required]
+        public int? ProjectId { get; set; }
     }
 }
