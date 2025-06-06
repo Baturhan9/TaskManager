@@ -51,6 +51,7 @@ public partial class TaskManagerContext : DbContext
                 }
             }
         }
+
         modelBuilder.Entity<Attachment>(entity =>
         {
             entity.HasKey(e => e.AttachmentId).HasName("attachments_pkey");
@@ -134,6 +135,19 @@ public partial class TaskManagerContext : DbContext
                 .HasForeignKey(d => d.TesterId)
                 .HasConstraintName("tasks_tester_id_fkey");
         });
+
+        modelBuilder
+            .Entity<Task>()
+            .HasMany(p => p.TaskStatusLogs)
+            .WithOne(c => c.Task)
+            .HasForeignKey(c => c.TaskId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder
+            .Entity<Task>()
+            .HasMany(p => p.Attachments)
+            .WithOne(c => c.Task)
+            .HasForeignKey(c => c.TaskId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TaskStatusLog>(entity =>
         {
